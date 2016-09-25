@@ -3,6 +3,7 @@ package ru.spbau.gorokhov;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 /**
  * Created by wackloner on 25.09.16 in 12:36.
@@ -76,7 +77,11 @@ public abstract class NotCompressedTrie implements Trie, StreamSerializable {
         root.deserialize(in);
     }
 
+    public ArrayList<String> getElementsList() {
+        return root.getElementsList();
+    }
+
     public String toString() {
-        return root.toString();
+        return getElementsList().toString();
     }
 }

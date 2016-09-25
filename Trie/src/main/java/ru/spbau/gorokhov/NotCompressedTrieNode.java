@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 /**
- * Created by wackloner on 025 25.09.16 in 16:26.
+ * Created by wackloner on 25.09.16 in 16:26.
  */
 public abstract class NotCompressedTrieNode implements TrieNode, StreamSerializable {
     protected boolean isTerminal;
@@ -46,13 +46,17 @@ public abstract class NotCompressedTrieNode implements TrieNode, StreamSerializa
         return suffixesCount == 0;
     }
 
-    public String toString() {
+    public ArrayList<String> getElementsList() {
         ArrayList<String> result = new ArrayList<String>();
         write(result, "");
-        return result.toString();
+        return result;
     }
 
     protected abstract void write(ArrayList<String> array, String prefix);
+
+    public String toString() {
+        return getElementsList().toString();
+    }
 
     public abstract void serialize(OutputStream out) throws IOException;
 
