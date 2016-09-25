@@ -8,17 +8,17 @@ import java.util.ArrayList;
 /**
  * Created by wackloner on 25.09.16 in 12:36.
  */
-public abstract class NotCompressedTrie implements Trie, StreamSerializable {
-    protected NotCompressedTrieNode root;
+public abstract class CollectionTrie implements Trie, StreamSerializable {
+    protected CollectionTrieNode root;
 
     public boolean add(String element) {
         if (contains(element)) {
             return false;
         }
-        NotCompressedTrieNode pointer = root;
+        CollectionTrieNode pointer = root;
         pointer.increaseSuffixesCount();
         for (char symbol : element.toCharArray()) {
-            pointer = pointer.goSymbol(symbol);
+            pointer = pointer.goNext(symbol);
             pointer.increaseSuffixesCount();
         }
         pointer.setAsTerminal();
@@ -26,12 +26,13 @@ public abstract class NotCompressedTrie implements Trie, StreamSerializable {
     }
 
     public boolean contains(String element) {
-        NotCompressedTrieNode pointer = root;
+        CollectionTrieNode pointer = root;
         for (char symbol : element.toCharArray()) {
-            if (!pointer.hasSymbol(symbol)) {
+            if (!pointer.hasNext(symbol)) {
                 return false;
             }
-            pointer = pointer.goSymbol(symbol);
+            System.out.println(symbol);
+            pointer = pointer.goNext(symbol);
         }
         return pointer.isTerminal();
     }
@@ -40,13 +41,13 @@ public abstract class NotCompressedTrie implements Trie, StreamSerializable {
         if (!contains(element)) {
             return false;
         }
-        NotCompressedTrieNode pointer = root;
+        CollectionTrieNode pointer = root;
         pointer.decreaseSuffixesCount();
         for (char symbol : element.toCharArray()) {
-            NotCompressedTrieNode nextNode = pointer.goSymbol(symbol);
+            CollectionTrieNode nextNode = pointer.goNext(symbol);
             nextNode.decreaseSuffixesCount();
             if (nextNode.hasNoSuffixes()) {
-                pointer.removeSymbol(symbol);
+                pointer.removeNext(symbol);
             }
             pointer = nextNode;
         }
@@ -59,12 +60,12 @@ public abstract class NotCompressedTrie implements Trie, StreamSerializable {
     }
 
     public int howManyStartsWithPrefix(String prefix) {
-        NotCompressedTrieNode pointer = root;
+        CollectionTrieNode pointer = root;
         for (char symbol : prefix.toCharArray()) {
-            if (!pointer.hasSymbol(symbol)) {
+            if (!pointer.hasNext(symbol)) {
                 return 0;
             }
-            pointer = pointer.goSymbol(symbol);
+            pointer = pointer.goNext(symbol);
         }
         return pointer.suffixesCount();
     }
@@ -82,6 +83,6 @@ public abstract class NotCompressedTrie implements Trie, StreamSerializable {
     }
 
     public String toString() {
-        return getElementsList().toString();
+        return root.toString();
     }
 }

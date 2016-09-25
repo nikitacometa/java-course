@@ -1,90 +1,42 @@
 package ru.spbau.gorokhov;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Created by wackloner on 25.09.16 in 12:42.
  */
-public class HashMapTrieNode extends NotCompressedTrieNode {
-    private HashMap<Character, HashMapTrieNode> symbols;
+public class HashMapTrieNode extends CollectionTrieNode {
+    protected static final String COLLECTION_NAME = "HashMap";
+
+    private HashMap<Character, HashMapTrieNode> next;
 
     public HashMapTrieNode() {
-        symbols = new HashMap<Character, HashMapTrieNode>(0);
+        next = new HashMap<Character, HashMapTrieNode>(0);
     }
 
-    public boolean hasSymbol(char symbol) {
-        return symbols.containsKey(symbol);
+    @Override
+    public void removeNext(char symbol) {
+        next.remove(symbol);
     }
 
-    public HashMapTrieNode goSymbol(char symbol) {
-        HashMapTrieNode nextNode;
-        if (hasSymbol(symbol)) {
-            nextNode = symbols.get(symbol);
-        } else {
-            nextNode = new HashMapTrieNode();
-            symbols.put(symbol, nextNode);
-        }
-        return nextNode;
+    @Override
+    protected void setNext(char symbol, CollectionTrieNode node) {
+        next.put(symbol, (HashMapTrieNode) node);
     }
 
-    public void removeSymbol(char symbol) {
-        symbols.remove(symbol);
+    @Override
+    protected HashMapTrieNode createNode() {
+        return new HashMapTrieNode();
     }
 
-    public void serialize(OutputStream out) throws IOException {
-        out.write(isTerminal ? 1 : 0);
-        for (char symbol : symbols.keySet()) {
-            out.write(1);
-            out.write(symbol);
-            symbols.get(symbol).serialize(out);
-            out.write(0);
-        }
+    @Override
+    protected HashMapTrieNode getNext(char symbol) {
+        return next.get(symbol);
     }
 
-    public void deserialize(InputStream in) throws IOException {
-        int terminality = in.read();
-        if (terminality == 0) {
-            isTerminal = false;
-        } else if (terminality == 1) {
-            isTerminal = true;
-        } else {
-            throw new IOException("Invalid HashMapTrieNode format.");
-        }
-        while (true) {
-            int cur = in.read();
-            if (cur == -1) {
-                break;
-            } if (cur == 0) {
-                break;
-            } else if (cur == 1) {
-                int symbol = in.read();
-                HashMapTrieNode newNode = new HashMapTrieNode();
-                symbols.put((char) symbol, newNode);
-                newNode.deserialize(in);
-            } else {
-                throw new IOException("Invalid HashMapTrieNode format.");
-            }
-        }
-        countSuffixes();
-    }
-
-    protected void write(ArrayList<String> array, String prefix) {
-        if (isTerminal) {
-            array.add(prefix);
-        }
-        for (char symbol : symbols.keySet()) {
-            symbols.get(symbol).write(array, prefix + symbol);
-        }
-    }
-
-    private void countSuffixes() {
-        suffixesCount = isTerminal ? 1 : 0;
-        for (HashMapTrieNode next : symbols.values()) {
-            suffixesCount += next.suffixesCount();
-        }
+    @Override
+    protected Set<Character> getSetOfNextSymbols() {
+        return next.keySet();
     }
 }

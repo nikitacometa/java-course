@@ -1,14 +1,16 @@
 package ru.spbau.gorokhov;
 
+import java.util.ArrayList;
+
 /**
  * Created by wackloner on 25.09.16 in 12:43.
  */
 public interface TrieNode {
-    boolean hasSymbol(char symbol);
+    boolean hasNext(char symbol);
 
-    TrieNode goSymbol(char symbol);
+    void removeNext(char symbol);
 
-    void removeSymbol(char symbol);
+    TrieNode goNext(char symbol);
 
     void setAsTerminal();
 
@@ -23,6 +25,8 @@ public interface TrieNode {
     int suffixesCount();
 
     boolean hasNoSuffixes();
+
+    ArrayList<String> getElementsList();
 
     String toString();
 }

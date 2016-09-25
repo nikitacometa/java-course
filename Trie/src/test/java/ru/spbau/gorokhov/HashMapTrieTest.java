@@ -1,14 +1,11 @@
 package ru.spbau.gorokhov;
 
 import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by wackloner on 25.09.16 in 16:54.
  */
-public class HashMapTrieTest extends NotCompressedTrieTest {
+public class HashMapTrieTest extends CollectionTrieTest {
     @Before
     public void setUp() throws Exception {
         trie = new HashMapTrie();

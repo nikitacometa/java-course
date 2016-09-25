@@ -11,11 +11,11 @@ import static org.junit.Assert.*;
 /**
  * Created by wackloner on 25.09.16 in 17:11.
  */
-public abstract class NotCompressedTrieTest {
+public abstract class CollectionTrieTest {
     protected static final String[] WORDS = { "a", "aa", "aaa", "aaaacd", "aaab", "abab", "b", "bb", "aabac", "aaacc" };
     protected static final String NEW_WORD = "Kanye West is God";
     protected static final String PREFIX = "aa";
-    protected NotCompressedTrie trie, trie2;
+    protected CollectionTrie trie, trie2;
 
     @Test
     public void add() throws Exception {
@@ -104,6 +104,11 @@ public abstract class NotCompressedTrieTest {
         InputStream in = new ByteArrayInputStream(((ByteArrayOutputStream) out).toByteArray());
 
         trie2.deserialize(in);
+
+        System.out.println("W\nH\nA\nT");
+
+        System.out.println(trie);
+        System.out.println(trie2);
 
         assertEquals(trie.toString(), trie2.toString());
     }
