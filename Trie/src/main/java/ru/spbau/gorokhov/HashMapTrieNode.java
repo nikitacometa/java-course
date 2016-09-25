@@ -9,10 +9,8 @@ import java.util.HashMap;
 /**
  * Created by wackloner on 25.09.16 in 12:42.
  */
-public class HashMapTrieNode implements TrieNode, StreamSerializable {
+public class HashMapTrieNode extends NotCompressedTrieNode {
     private HashMap<Character, HashMapTrieNode> symbols;
-    private boolean isTerminal;
-    private int suffixesCount;
 
     public HashMapTrieNode() {
         symbols = new HashMap<Character, HashMapTrieNode>(0);
@@ -35,34 +33,6 @@ public class HashMapTrieNode implements TrieNode, StreamSerializable {
 
     public void removeSymbol(char symbol) {
         symbols.remove(symbol);
-    }
-
-    public void setAsTerminal() {
-        isTerminal = true;
-    }
-
-    public void setAsNotTerminal() {
-        isTerminal = false;
-    }
-
-    public boolean isTerminal() {
-        return isTerminal;
-    }
-
-    public void increaseSuffixesCount() {
-        suffixesCount++;
-    }
-
-    public void decreaseSuffixesCount() {
-        suffixesCount--;
-    }
-
-    public int suffixesCount() {
-        return suffixesCount;
-    }
-
-    public boolean hasNoSuffixes() {
-        return suffixesCount == 0;
     }
 
     public void serialize(OutputStream out) throws IOException {
@@ -102,13 +72,7 @@ public class HashMapTrieNode implements TrieNode, StreamSerializable {
         countSuffixes();
     }
 
-    public String toString() {
-        ArrayList<String> result = new ArrayList<String>();
-        write(result, "");
-        return result.toString();
-    }
-
-    private void write(ArrayList<String> array, String prefix) {
+    protected void write(ArrayList<String> array, String prefix) {
         if (isTerminal) {
             array.add(prefix);
         }

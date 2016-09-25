@@ -23,4 +23,6 @@ public interface TrieNode {
     int suffixesCount();
 
     boolean hasNoSuffixes();
+
+    String toString();
 }
