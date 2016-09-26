@@ -9,7 +9,7 @@ import java.util.Collection;
 /**
  * Created by wackloner on 25.09.16 in 16:26.
  */
-public abstract class CollectionTrieNode implements TrieNode, StreamSerializable {
+public abstract class SimpleTrieNode implements TrieNode, StreamSerializable {
     protected static final String COLLECTION_NAME = "Collection";
 
     private boolean isTerminal;
@@ -19,8 +19,8 @@ public abstract class CollectionTrieNode implements TrieNode, StreamSerializable
         return getNext(symbol) != null;
     }
 
-    public CollectionTrieNode goNext(char symbol) {
-        CollectionTrieNode nextNode;
+    public SimpleTrieNode goNext(char symbol) {
+        SimpleTrieNode nextNode;
         if (hasNext(symbol)) {
             nextNode = getNext(symbol);
         } else {
@@ -97,7 +97,7 @@ public abstract class CollectionTrieNode implements TrieNode, StreamSerializable
                 break;
             } else if (cur == 1) {
                 int symbol = in.read();
-                CollectionTrieNode newNode = createNode();
+                SimpleTrieNode newNode = createNode();
                 setNext((char) symbol, newNode);
                 newNode.deserialize(in);
             } else {
@@ -123,11 +123,11 @@ public abstract class CollectionTrieNode implements TrieNode, StreamSerializable
         }
     }
 
-    protected abstract CollectionTrieNode createNode();
+    protected abstract SimpleTrieNode createNode();
 
-    protected abstract void setNext(char symbol, CollectionTrieNode node);
+    protected abstract void setNext(char symbol, SimpleTrieNode node);
 
-    protected abstract CollectionTrieNode getNext(char symbol);
+    protected abstract SimpleTrieNode getNext(char symbol);
 
     protected abstract Collection<Character> getSetOfNextSymbols();
 }

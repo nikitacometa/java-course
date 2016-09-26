@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by wackloner on 25.09.16 in 17:59.
  */
-public class ArrayTrieNode extends CollectionTrieNode {
+public class ArrayTrieNode extends SimpleTrieNode {
     protected static final String COLLECTION_NAME = "Array";
     private static final int CHARACTERS = 256;
 
@@ -26,7 +26,7 @@ public class ArrayTrieNode extends CollectionTrieNode {
     }
 
     @Override
-    protected void setNext(char symbol, CollectionTrieNode node) {
+    protected void setNext(char symbol, SimpleTrieNode node) {
         next[symbol] = (ArrayTrieNode) node;
     }
 

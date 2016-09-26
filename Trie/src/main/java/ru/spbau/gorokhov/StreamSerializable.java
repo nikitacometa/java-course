@@ -9,10 +9,19 @@ import java.io.OutputStream;
  */
 public interface StreamSerializable {
 
+    /**
+     * Write current state to output stream
+     *
+     * @param out output stream
+     * @throws IOException
+     */
     void serialize(OutputStream out) throws IOException;
 
     /**
      * Replace current state with data from input stream
+     *
+     * @param in input stream
+     * @throws IOException
      */
     void deserialize(InputStream in) throws IOException;
 }

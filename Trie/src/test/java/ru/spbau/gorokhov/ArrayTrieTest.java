@@ -5,7 +5,7 @@ import org.junit.Before;
 /**
  * Created by wackloner on 25.09.16 in 18:13.
  */
-public class ArrayTrieTest extends CollectionTrieTest {
+public class ArrayTrieTest extends SimpleTrieTest {
     @Before
     public void setUp() throws Exception {
         trie = new ArrayTrie();

@@ -8,14 +8,14 @@ import java.util.ArrayList;
 /**
  * Created by wackloner on 25.09.16 in 12:36.
  */
-public abstract class CollectionTrie implements Trie, StreamSerializable {
-    protected CollectionTrieNode root;
+public abstract class SimpleTrie implements Trie, StreamSerializable {
+    protected SimpleTrieNode root;
 
     public boolean add(String element) {
         if (contains(element)) {
             return false;
         }
-        CollectionTrieNode pointer = root;
+        SimpleTrieNode pointer = root;
         pointer.increaseSuffixesCount();
         for (char symbol : element.toCharArray()) {
             pointer = pointer.goNext(symbol);
@@ -26,7 +26,7 @@ public abstract class CollectionTrie implements Trie, StreamSerializable {
     }
 
     public boolean contains(String element) {
-        CollectionTrieNode pointer = root;
+        SimpleTrieNode pointer = root;
         for (char symbol : element.toCharArray()) {
             if (!pointer.hasNext(symbol)) {
                 return false;
@@ -41,10 +41,10 @@ public abstract class CollectionTrie implements Trie, StreamSerializable {
         if (!contains(element)) {
             return false;
         }
-        CollectionTrieNode pointer = root;
+        SimpleTrieNode pointer = root;
         pointer.decreaseSuffixesCount();
         for (char symbol : element.toCharArray()) {
-            CollectionTrieNode nextNode = pointer.goNext(symbol);
+            SimpleTrieNode nextNode = pointer.goNext(symbol);
             nextNode.decreaseSuffixesCount();
             if (nextNode.hasNoSuffixes()) {
                 pointer.removeNext(symbol);
@@ -60,7 +60,7 @@ public abstract class CollectionTrie implements Trie, StreamSerializable {
     }
 
     public int howManyStartsWithPrefix(String prefix) {
-        CollectionTrieNode pointer = root;
+        SimpleTrieNode pointer = root;
         for (char symbol : prefix.toCharArray()) {
             if (!pointer.hasNext(symbol)) {
                 return 0;

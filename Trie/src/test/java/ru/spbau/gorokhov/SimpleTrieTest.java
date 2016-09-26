@@ -11,11 +11,11 @@ import static org.junit.Assert.*;
 /**
  * Created by wackloner on 25.09.16 in 17:11.
  */
-public abstract class CollectionTrieTest {
+public abstract class SimpleTrieTest {
     protected static final String[] WORDS = { "a", "aa", "aaa", "aaaacd", "aaab", "abab", "b", "bb", "aabac", "aaacc" };
     protected static final String NEW_WORD = "Kanye West is God";
     protected static final String PREFIX = "aa";
-    protected CollectionTrie trie, trie2;
+    protected SimpleTrie trie, trie2;
 
     @Test
     public void add() throws Exception {

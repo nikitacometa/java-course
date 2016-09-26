@@ -6,7 +6,7 @@ import java.util.Set;
 /**
  * Created by wackloner on 25.09.16 in 12:42.
  */
-public class HashMapTrieNode extends CollectionTrieNode {
+public class HashMapTrieNode extends SimpleTrieNode {
     protected static final String COLLECTION_NAME = "HashMap";
 
     private HashMap<Character, HashMapTrieNode> next;
@@ -21,7 +21,7 @@ public class HashMapTrieNode extends CollectionTrieNode {
     }
 
     @Override
-    protected void setNext(char symbol, CollectionTrieNode node) {
+    protected void setNext(char symbol, SimpleTrieNode node) {
         next.put(symbol, (HashMapTrieNode) node);
     }
 
