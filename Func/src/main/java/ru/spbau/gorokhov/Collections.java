@@ -10,7 +10,7 @@ import java.util.List;
 public class Collections {
     private Collections() {}
 
-    public static <A, V> List<V> map(Function1<A, V> f, Iterable<? extends A> a) {
+    public static <A, V> List<V> map(Function1<A, V> f, Iterable<A> a) {
         List<V> res = new ArrayList<>();
         for (A x : a) {
             res.add(f.apply(x));

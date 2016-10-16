@@ -7,7 +7,26 @@ import java.util.List;
  * Created by wackloner on 15.10.2016.
  */
 public class Examples {
-    private Examples() {}
+    public static Predicate<Integer> lessThan15 = new Predicate<Integer>() {
+        @Override
+        public Boolean apply(Integer x) {
+            return x < 15;
+        }
+    };
+
+    public static Predicate<Integer> moreThan7 = new Predicate<Integer>() {
+        @Override
+        public Boolean apply(Integer x) {
+            return x > 7;
+        }
+    };
+
+    public static Predicate<Integer> isEven = new Predicate<Integer>() {
+        @Override
+        public Boolean apply(Integer x) {
+            return x % 2 == 0;
+        }
+    };
 
     public static Function1<Integer, Integer> squareNumber = new Function1<Integer, Integer>() {
         @Override
