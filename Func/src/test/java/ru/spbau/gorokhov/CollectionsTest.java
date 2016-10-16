@@ -45,7 +45,7 @@ public class CollectionsTest {
     @Test
     public void takeUnless() throws Exception {
         int l = 1, r = 20;
-        List<Integer> actual = Collections.takeUnless(Examples.moreThan7, Examples.enumFromTo.apply(l, r));
+        List<Integer> actual = Collections.takeUnless(Examples.greaterThan7, Examples.enumFromTo.apply(l, r));
         List<Integer> expected = Utils.getNumbersList(l, 7);
 
         Utils.assertListsEquals(expected, actual);

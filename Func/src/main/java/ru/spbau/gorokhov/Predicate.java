@@ -3,11 +3,13 @@ package ru.spbau.gorokhov;
 /**
  * Created by wackloner on 15.10.2016.
  */
-public abstract class Predicate<A> extends Function1<A, Boolean> {
+public abstract class Predicate<A> {
+    public abstract boolean apply(A x);
+
     public Predicate<A> not() {
         return new Predicate<A>() {
             @Override
-            public Boolean apply(A x) {
+            public boolean apply(A x) {
                 return !Predicate.this.apply(x);
             }
         };
@@ -16,7 +18,7 @@ public abstract class Predicate<A> extends Function1<A, Boolean> {
     public Predicate<A> or(Predicate<A> p) {
         return new Predicate<A>() {
             @Override
-            public Boolean apply(A x) {
+            public boolean apply(A x) {
                 return Predicate.this.apply(x) || p.apply(x);
             }
         };
@@ -25,7 +27,7 @@ public abstract class Predicate<A> extends Function1<A, Boolean> {
     public Predicate<A> and(Predicate<A> p) {
         return new Predicate<A>() {
             @Override
-            public Boolean apply(A x) {
+            public boolean apply(A x) {
                 return Predicate.this.apply(x) && p.apply(x);
             }
         };
@@ -33,7 +35,7 @@ public abstract class Predicate<A> extends Function1<A, Boolean> {
 
     public static final Predicate ALWAYS_TRUE = new Predicate() {
         @Override
-        public Boolean apply(Object x) {
+        public boolean apply(Object x) {
             return true;
         }
     };
