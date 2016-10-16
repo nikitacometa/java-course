@@ -1,6 +1,7 @@
 package ru.spbau.gorokhov;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -51,17 +52,14 @@ public class Collections {
     }
 
     public static <A, V> V foldr(Function2<V, A, V> f, V startValue, Iterable<? extends A> a) {
-        ArrayList<A> list = new ArrayList<>();
-        for (A x : a) {
-            list.add(x);
-        }
-        return foldr(f, startValue, list, 0);
+        return foldr(f, startValue, a.iterator());
     }
 
-    private static <A, V> V foldr(Function2<V, A, V> f, V startValue, ArrayList<A> list, int from) {
-        if (from == list.size()) {
+    private static <A, V> V foldr(Function2<V, A, V> f, V startValue, Iterator<? extends A> it) {
+        if (!it.hasNext()) {
             return startValue;
         }
-        return f.apply(foldr(f, startValue, list, from + 1), list.get(from));
+        A element = it.next();
+        return f.apply(foldr(f, startValue, it), element);
     }
 }
