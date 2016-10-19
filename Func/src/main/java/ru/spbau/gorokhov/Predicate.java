@@ -3,9 +3,23 @@ package ru.spbau.gorokhov;
 /**
  * Created by wackloner on 15.10.2016.
  */
+
+/**
+ * Class representing predicate of one argument p: A -> boolean
+ * @param <A> argument type
+ */
 public abstract class Predicate<A> {
+    /**
+     * Applies predicate to an argument
+     * @param x argument
+     * @return result
+     */
     public abstract boolean apply(A x);
 
+    /**
+     * Gets predicate h which is negation to p
+     * @return h(x) = !p(x)
+     */
     public Predicate<A> not() {
         return new Predicate<A>() {
             @Override
@@ -15,24 +29,37 @@ public abstract class Predicate<A> {
         };
     }
 
-    public Predicate<A> or(Predicate<A> p) {
+    /**
+     * Gets predicate which is logical disjunction of p and some other predicate
+     * @param g second predicate
+     * @return h(x) = p(x) || g(x)
+     */
+    public Predicate<A> or(Predicate<A> g) {
         return new Predicate<A>() {
             @Override
             public boolean apply(A x) {
-                return Predicate.this.apply(x) || p.apply(x);
+                return Predicate.this.apply(x) || g.apply(x);
             }
         };
     }
 
-    public Predicate<A> and(Predicate<A> p) {
+    /**
+     * Gets predicate which is logical conjunction of p and some other predicate
+     * @param g second predicate
+     * @return h(x) = p(x) && g(x)
+     */
+    public Predicate<A> and(Predicate<A> g) {
         return new Predicate<A>() {
             @Override
             public boolean apply(A x) {
-                return Predicate.this.apply(x) && p.apply(x);
+                return Predicate.this.apply(x) && g.apply(x);
             }
         };
     }
 
+    /**
+     * Predicate which always returns <tt>true</tt>
+     */
     public static final Predicate ALWAYS_TRUE = new Predicate() {
         @Override
         public boolean apply(Object x) {
@@ -40,5 +67,8 @@ public abstract class Predicate<A> {
         }
     };
 
+    /**
+     * Predicate which always returns <tt>false</tt>
+     */
     public static final Predicate ALWAYS_FALSE = ALWAYS_TRUE.not();
 }
