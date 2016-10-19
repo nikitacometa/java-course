@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 public class CollectionsTest {
     @Test
     public void map() throws Exception {
-        List<String> s = Utils.getStringList();
+        List<String> s = Utils.getList("aa", "bdf", "sdffsd", "sdgerg", "efsdgsd", "gerger", "sf", "efsd");
         List<Integer> lengths = Collections.map(Examples.stringLength, s);
         List<Integer> expectedLengths = new ArrayList<>();
         for (String t : s) {

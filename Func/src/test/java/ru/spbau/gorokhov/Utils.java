@@ -29,11 +29,10 @@ public class Utils {
         }
     }
 
-    public static List<String> getStringList() {
-        String[] s = { "aa", "bdf", "sdffsd", "sdgerg", "efsdgsd", "gerger", "sf", "efsd" };
-        List<String> res = new ArrayList<>();
-        for (String t : s) {
-            res.add(t);
+    public static <T> List<T> getList(T... elements) {
+        List<T> res = new ArrayList<>();
+        for (T element : elements) {
+            res.add(element);
         }
         return res;
     }
