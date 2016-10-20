@@ -9,21 +9,21 @@ import java.util.List;
 public class Examples {
     public static Predicate<Integer> lessThan15 = new Predicate<Integer>() {
         @Override
-        public boolean apply(Integer x) {
+        public Boolean apply(Integer x) {
             return x < 15;
         }
     };
 
     public static Predicate<Integer> greaterThan7 = new Predicate<Integer>() {
         @Override
-        public boolean apply(Integer x) {
+        public Boolean apply(Integer x) {
             return x > 7;
         }
     };
 
     public static Predicate<Integer> isEven = new Predicate<Integer>() {
         @Override
-        public boolean apply(Integer x) {
+        public Boolean apply(Integer x) {
             return x % 2 == 0;
         }
     };

@@ -8,13 +8,13 @@ package ru.spbau.gorokhov;
  * Class representing predicate of one argument p: A -> boolean
  * @param <A> argument type
  */
-public abstract class Predicate<A> {
+public abstract class Predicate<A> extends Function1<A, Boolean> {
     /**
      * Applies predicate to an argument
      * @param x argument
      * @return result
      */
-    public abstract boolean apply(A x);
+    public abstract Boolean apply(A x);
 
     /**
      * Gets predicate h which is negation to p
@@ -23,7 +23,7 @@ public abstract class Predicate<A> {
     public Predicate<A> not() {
         return new Predicate<A>() {
             @Override
-            public boolean apply(A x) {
+            public Boolean apply(A x) {
                 return !Predicate.this.apply(x);
             }
         };
@@ -37,7 +37,7 @@ public abstract class Predicate<A> {
     public Predicate<A> or(Predicate<A> g) {
         return new Predicate<A>() {
             @Override
-            public boolean apply(A x) {
+            public Boolean apply(A x) {
                 return Predicate.this.apply(x) || g.apply(x);
             }
         };
@@ -51,7 +51,7 @@ public abstract class Predicate<A> {
     public Predicate<A> and(Predicate<A> g) {
         return new Predicate<A>() {
             @Override
-            public boolean apply(A x) {
+            public Boolean apply(A x) {
                 return Predicate.this.apply(x) && g.apply(x);
             }
         };
@@ -62,7 +62,7 @@ public abstract class Predicate<A> {
      */
     public static final Predicate ALWAYS_TRUE = new Predicate() {
         @Override
-        public boolean apply(Object x) {
+        public Boolean apply(Object x) {
             return true;
         }
     };

@@ -56,7 +56,7 @@ public class CollectionsInheritanceTest {
 
     private Predicate<Point> isShortVector = new Predicate<Point>() {
         @Override
-        public boolean apply(Point p) {
+        public Boolean apply(Point p) {
             return squaredVectorLength.apply(p) <= 100;
         }
     };
