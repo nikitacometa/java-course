@@ -60,8 +60,8 @@ public class Function2Test {
     @Test
     public void curry() throws Exception {
         int a = 666, b = 777;
-        Function1<Pair<Integer, Integer>, Integer> curriedSum = Examples.sum.curry();
-        int actual = curriedSum.apply(new Pair<>(a, b));
+        Function1<Integer, Function1<Integer, Integer>> curriedSum = Examples.sum.curry();
+        int actual = curriedSum.apply(a).apply(b);
         int expected = Examples.sum.apply(a, b);
 
         assertEquals(expected, actual);

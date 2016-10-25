@@ -1,7 +1,5 @@
 package ru.spbau.gorokhov;
 
-import javafx.util.Pair;
-
 /**
  * Created by wackloner on 15.10.2016.
  */
@@ -66,13 +64,13 @@ public abstract class Function2<F, S, V> {
 
     /**
      * Curries f
-     * @return h(p), where p: (F, S)
+     * @return h(x) = g(y) = f(x, y)
      */
-    public Function1<Pair<F, S>, V> curry() {
-        return new Function1<Pair<F, S>, V>() {
+    public Function1<F, Function1<S, V>> curry() {
+        return new Function1<F, Function1<S, V>>() {
             @Override
-            public V apply(Pair<F, S> p) {
-                return Function2.this.apply(p.getKey(), p.getValue());
+            public Function1<S, V> apply(F x) {
+                return Function2.this.bind1(x);
             }
         };
     }
