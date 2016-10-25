@@ -23,7 +23,7 @@ public abstract class Function1<A, V> {
      * @param <T> result type of g
      * @return h(x) = g(f(x))
      */
-    public <T> Function1<A, T> compose(Function1<V, T> g) {
+    public <T> Function1<A, T> compose(Function1<? super V, T> g) {
         return new Function1<A, T>() {
             public T apply(A x) {
                 return g.apply(Function1.this.apply(x));

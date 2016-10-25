@@ -25,7 +25,7 @@ public abstract class Function2<F, S, V> {
      * @param <T> result type of g
      * @return h(x, y) = g(f(x, y))
      */
-    public <T> Function2<F, S, T> compose(Function1<V, T> g) {
+    public <T> Function2<F, S, T> compose(Function1<? super V, T> g) {
         return new Function2<F, S, T>() {
             @Override
             public T apply(F x, S y) {

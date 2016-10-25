@@ -34,7 +34,7 @@ public abstract class Predicate<A> extends Function1<A, Boolean> {
      * @param g second predicate
      * @return h(x) = p(x) || g(x)
      */
-    public Predicate<A> or(Predicate<A> g) {
+    public Predicate<A> or(Predicate<? super A> g) {
         return new Predicate<A>() {
             @Override
             public Boolean apply(A x) {
@@ -48,7 +48,7 @@ public abstract class Predicate<A> extends Function1<A, Boolean> {
      * @param g second predicate
      * @return h(x) = p(x) && g(x)
      */
-    public Predicate<A> and(Predicate<A> g) {
+    public Predicate<A> and(Predicate<? super A> g) {
         return new Predicate<A>() {
             @Override
             public Boolean apply(A x) {
