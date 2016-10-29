@@ -3,6 +3,7 @@ package ru.spbau.gorokhov;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -73,39 +74,39 @@ public class CollectionsInheritanceTest {
         e = new Point3D(6, 8, 100);
         f = new Point3D(20, 20, 800);
         g = new Point3D(4, 4, 32);
-        points = Utils.getList(a, b, c, d, e, f, g);
+        points = Arrays.asList(a, b, c, d, e, f, g);
     }
 
     @Test
     public void map() throws Exception {
         List<Integer> actual = Collections.map(squaredVectorLength, points);
-        List<Integer> expected = Utils.getList(2, 8, 200, 25, 100, 800, 32);
+        List<Integer> expected = Arrays.asList(2, 8, 200, 25, 100, 800, 32);
 
-        Utils.assertListsEquals(actual, expected);
+        assertTrue(expected.equals(actual));
     }
 
     @Test
     public void filter() throws Exception {
         List<Point3D> actual = Collections.filter(isShortVector, points);
-        List<Point3D> expected = Utils.getList(a, b, d, e, g);
+        List<Point3D> expected = Arrays.asList(a, b, d, e, g);
 
-        Utils.assertListsEquals(actual, expected);
+        assertTrue(expected.equals(actual));
     }
 
     @Test
     public void takeWhile() throws Exception {
         List<Point3D> actual = Collections.takeWhile(isShortVector, points);
-        List<Point3D> expected = Utils.getList(a, b);
+        List<Point3D> expected = Arrays.asList(a, b);
 
-        Utils.assertListsEquals(actual, expected);
+        assertTrue(expected.equals(actual));
     }
 
     @Test
     public void takeUnless() throws Exception {
         List<Point3D> actual = Collections.takeUnless(isShortVector.not(), points);
-        List<Point3D> expected = Utils.getList(a, b);
+        List<Point3D> expected = Arrays.asList(a, b);
 
-        Utils.assertListsEquals(actual, expected);
+        assertTrue(expected.equals(actual));
     }
 
     private Function2<Integer, Point, Integer> sumIntAndSquaredVectorLength = new Function2<Integer, Point, Integer>() {

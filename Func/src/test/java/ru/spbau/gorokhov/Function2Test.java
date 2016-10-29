@@ -25,7 +25,7 @@ public class Function2Test {
         List<Integer> actual = Examples.enumFromTo.apply(l, r);
         List<Integer> expected = Utils.getNumbersList(l, r);
 
-        Utils.assertListsEquals(expected, actual);
+        assertTrue(expected.equals(actual));
     }
 
     @Test
@@ -44,7 +44,7 @@ public class Function2Test {
         List<Integer> actual = enumFromLTo.apply(r);
         List<Integer> expected = Utils.getNumbersList(l, r);
 
-        Utils.assertListsEquals(expected, actual);
+        assertTrue(expected.equals(actual));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class Function2Test {
         List<Integer> actual = enumFromToR.apply(l);
         List<Integer> expected = Utils.getNumbersList(l, r);
 
-        Utils.assertListsEquals(expected, actual);
+        assertTrue(expected.equals(actual));
     }
 
     @Test

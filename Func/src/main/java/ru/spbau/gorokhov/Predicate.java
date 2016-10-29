@@ -60,7 +60,7 @@ public abstract class Predicate<A> extends Function1<A, Boolean> {
     /**
      * Predicate which always returns <tt>true</tt>
      */
-    public static final Predicate ALWAYS_TRUE = new Predicate() {
+    public static final Predicate<Object> ALWAYS_TRUE = new Predicate<Object>() {
         @Override
         public Boolean apply(Object x) {
             return true;
@@ -70,5 +70,5 @@ public abstract class Predicate<A> extends Function1<A, Boolean> {
     /**
      * Predicate which always returns <tt>false</tt>
      */
-    public static final Predicate ALWAYS_FALSE = ALWAYS_TRUE.not();
+    public static final Predicate<Object> ALWAYS_FALSE = ALWAYS_TRUE.not();
 }
