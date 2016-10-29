@@ -10,14 +10,14 @@ package ru.spbau.gorokhov;
  * @param <S> second argument type
  * @param <V> result type
  */
-public abstract class Function2<F, S, V> {
+public interface Function2<F, S, V> {
     /**
      * Applies f to arguments
      * @param x first argument
      * @param y second argument
      * @return result
      */
-    public abstract V apply(F x, S y);
+    V apply(F x, S y);
 
     /**
      * Composes f with function of one argument
@@ -25,13 +25,8 @@ public abstract class Function2<F, S, V> {
      * @param <T> result type of g
      * @return h(x, y) = g(f(x, y))
      */
-    public <T> Function2<F, S, T> compose(Function1<? super V, T> g) {
-        return new Function2<F, S, T>() {
-            @Override
-            public T apply(F x, S y) {
-                return g.apply(Function2.this.apply(x, y));
-            }
-        };
+    default <T> Function2<F, S, T> compose(Function1<? super V, T> g) {
+        return (x, y) -> g.apply(apply(x, y));
     }
 
     /**
@@ -39,13 +34,8 @@ public abstract class Function2<F, S, V> {
      * @param x binding value
      * @return h(y) = f(x, y)
      */
-    public Function1<S, V> bind1(F x) {
-        return new Function1<S, V>() {
-            @Override
-            public V apply(S y) {
-                return Function2.this.apply(x, y);
-            }
-        };
+    default Function1<S, V> bind1(F x) {
+        return y -> apply(x, y);
     }
 
     /**
@@ -53,25 +43,15 @@ public abstract class Function2<F, S, V> {
      * @param y binding value
      * @return h(x) = f(x, y)
      */
-    public Function1<F, V> bind2(S y) {
-        return new Function1<F, V>() {
-            @Override
-            public V apply(F x) {
-                return Function2.this.apply(x, y);
-            }
-        };
+    default Function1<F, V> bind2(S y) {
+        return x -> apply(x, y);
     }
 
     /**
      * Curries f
      * @return h(x) = g(y) = f(x, y)
      */
-    public Function1<F, Function1<S, V>> curry() {
-        return new Function1<F, Function1<S, V>>() {
-            @Override
-            public Function1<S, V> apply(F x) {
-                return Function2.this.bind1(x);
-            }
-        };
+    default Function1<F, Function1<S, V>> curry() {
+        return x -> y -> apply(x, y);
     }
 }

@@ -48,19 +48,9 @@ public class CollectionsInheritanceTest {
         }
     }
 
-    private Function1<Point, Integer> squaredVectorLength = new Function1<Point, Integer>() {
-        @Override
-        public Integer apply(Point p) {
-            return p.x * p.x + p.y * p.y;
-        }
-    };
+    private Function1<Point, Integer> squaredVectorLength = p -> p.x * p.x + p.y * p.y;
 
-    private Predicate<Point> isShortVector = new Predicate<Point>() {
-        @Override
-        public Boolean apply(Point p) {
-            return squaredVectorLength.apply(p) <= 100;
-        }
-    };
+    private Predicate<Point> isShortVector = p -> squaredVectorLength.apply(p) <= 100;
 
     private Point3D a, b, c, d, e, f, g;
     private List<Point3D> points;
@@ -109,12 +99,7 @@ public class CollectionsInheritanceTest {
         assertTrue(expected.equals(actual));
     }
 
-    private Function2<Integer, Point, Integer> sumIntAndSquaredVectorLength = new Function2<Integer, Point, Integer>() {
-        @Override
-        public Integer apply(Integer x, Point y) {
-            return x + squaredVectorLength.apply(y);
-        }
-    };
+    private Function2<Integer, Point, Integer> sumIntAndSquaredVectorLength = (x, y) -> x + squaredVectorLength.apply(y);
 
     @Test
     public void foldl() throws Exception {

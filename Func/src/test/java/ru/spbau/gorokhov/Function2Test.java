@@ -1,6 +1,5 @@
 package ru.spbau.gorokhov;
 
-import javafx.util.Pair;
 import org.junit.Test;
 
 import java.util.List;
