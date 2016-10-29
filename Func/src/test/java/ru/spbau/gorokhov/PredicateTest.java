@@ -51,6 +51,20 @@ public class PredicateTest {
     }
 
     @Test
+    public void orAndLaziness() throws Exception {
+        Predicate<Object> assertFail = o -> {
+            assertTrue(false);
+            return false;
+        };
+
+        Predicate<Integer> evenOrThrow = Examples.isEven.or(assertFail);
+        assertTrue(evenOrThrow.apply(420));
+
+        Predicate<Integer> notEvenOrThrow = Examples.isEven.and(assertFail);
+        assertFalse(notEvenOrThrow.apply(1337));
+    }
+
+    @Test
     public void alwaysTrue() throws Exception {
         assertTrue(Predicate.ALWAYS_TRUE.apply("AU rules"));
 
