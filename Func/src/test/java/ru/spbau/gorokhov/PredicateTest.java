@@ -53,7 +53,7 @@ public class PredicateTest {
     @Test
     public void orAndLaziness() throws Exception {
         Predicate<Object> assertFail = o -> {
-            assertTrue(false);
+            fail();
             return false;
         };
 

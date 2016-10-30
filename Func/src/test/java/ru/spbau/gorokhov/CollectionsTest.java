@@ -21,7 +21,7 @@ public class CollectionsTest {
             expected.add(t.length());
         }
 
-        assertTrue(expected.equals(actual));
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -31,7 +31,7 @@ public class CollectionsTest {
         List<Integer> actual = Collections.filter(Examples.isEven, numbers);
         List<Integer> expected = Utils.getNumbersList(2, r, 2);
 
-        assertTrue(expected.equals(actual));
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class CollectionsTest {
         List<Integer> actual = Collections.takeWhile(Examples.lessThan15, Examples.enumFromTo.apply(l, r));
         List<Integer> expected = Utils.getNumbersList(l, 14);
 
-        assertTrue(expected.equals(actual));
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class CollectionsTest {
         List<Integer> actual = Collections.takeUnless(Examples.greaterThan7, Examples.enumFromTo.apply(l, r));
         List<Integer> expected = Utils.getNumbersList(l, 7);
 
-        assertTrue(expected.equals(actual));
+        assertEquals(expected, actual);
     }
 
     private final static String ALPHABET = "abcdefjhijklmnopqrstuvwxyz";
@@ -60,7 +60,7 @@ public class CollectionsTest {
         String actual = Collections.foldl(Examples.removeChar, ALPHABET, indices);
         String expected = "bdfhjlnprtvxz";
 
-        assertTrue(expected.equals(actual));
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -69,6 +69,6 @@ public class CollectionsTest {
         String actual = Collections.foldr(Examples.removeChar, ALPHABET, indices);
         String expected = "nopqrstuvwxyz";
 
-        assertTrue(expected.equals(actual));
+        assertEquals(expected, actual);
     }
 }

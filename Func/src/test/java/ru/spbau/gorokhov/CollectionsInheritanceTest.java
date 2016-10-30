@@ -72,7 +72,7 @@ public class CollectionsInheritanceTest {
         List<Integer> actual = Collections.map(squaredVectorLength, points);
         List<Integer> expected = Arrays.asList(2, 8, 200, 25, 100, 800, 32);
 
-        assertTrue(expected.equals(actual));
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class CollectionsInheritanceTest {
         List<Point3D> actual = Collections.filter(isShortVector, points);
         List<Point3D> expected = Arrays.asList(a, b, d, e, g);
 
-        assertTrue(expected.equals(actual));
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class CollectionsInheritanceTest {
         List<Point3D> actual = Collections.takeWhile(isShortVector, points);
         List<Point3D> expected = Arrays.asList(a, b);
 
-        assertTrue(expected.equals(actual));
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class CollectionsInheritanceTest {
         List<Point3D> actual = Collections.takeUnless(isShortVector.not(), points);
         List<Point3D> expected = Arrays.asList(a, b);
 
-        assertTrue(expected.equals(actual));
+        assertEquals(expected, actual);
     }
 
     private Function2<Integer, Point, Integer> sumIntAndSquaredVectorLength = (x, y) -> x + squaredVectorLength.apply(y);
