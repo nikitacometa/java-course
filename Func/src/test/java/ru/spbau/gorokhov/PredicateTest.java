@@ -66,19 +66,19 @@ public class PredicateTest {
 
     @Test
     public void alwaysTrue() throws Exception {
-        assertTrue(Predicate.ALWAYS_TRUE.apply("AU rules"));
+        assertTrue(Predicate.ALWAYS_TRUE().apply("AU rules"));
 
-        assertTrue(Predicate.ALWAYS_TRUE.apply(10101010));
+        assertTrue(Predicate.ALWAYS_TRUE().apply(10101010));
 
-        assertTrue(Predicate.ALWAYS_TRUE.apply(Predicate.ALWAYS_FALSE));
+        assertTrue(Predicate.ALWAYS_TRUE().apply(Predicate.ALWAYS_FALSE()));
     }
 
     @Test
     public void alwaysFalse() throws Exception {
-        assertFalse(Predicate.ALWAYS_FALSE.apply("AU rules"));
+        assertFalse(Predicate.ALWAYS_FALSE().apply("AU rules"));
 
-        assertFalse(Predicate.ALWAYS_FALSE.apply(100101010));
+        assertFalse(Predicate.ALWAYS_FALSE().apply(100101010));
 
-        assertFalse(Predicate.ALWAYS_FALSE.apply(Predicate.ALWAYS_TRUE));
+        assertFalse(Predicate.ALWAYS_FALSE().apply(Predicate.ALWAYS_TRUE()));
     }
 }

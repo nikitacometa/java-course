@@ -45,10 +45,14 @@ public interface Predicate<A> extends Function1<A, Boolean> {
     /**
      * Predicate which always returns <tt>true</tt>
      */
-    Predicate<Object> ALWAYS_TRUE = x -> true;
+    static <T> Predicate<T> ALWAYS_TRUE() {
+        return x -> true;
+    }
 
     /**
      * Predicate which always returns <tt>false</tt>
      */
-    Predicate<Object> ALWAYS_FALSE = ALWAYS_TRUE.not();
+    static <T> Predicate<T> ALWAYS_FALSE() {
+        return x -> false;
+    }
 }
