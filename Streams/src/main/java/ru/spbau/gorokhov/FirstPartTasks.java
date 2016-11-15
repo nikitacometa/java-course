@@ -1,9 +1,7 @@
 package ru.spbau.gorokhov;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -74,24 +72,56 @@ public final class FirstPartTasks {
 
     // Число повторяющихся альбомов в потоке
     public static long countAlbumDuplicates(Stream<Album> albums) {
-        throw new UnsupportedOperationException();
+        return albums
+                .collect(
+                        Collectors.groupingBy(
+                                Function.identity(),
+                                Collectors.summingInt(e -> 1)
+                        )
+                )
+                .values()
+                .stream()
+                .reduce(0, (cnt, val) -> cnt + val - 1);
     }
 
     // Альбом, в котором максимум рейтинга минимален
     // (если в альбоме нет ни одного трека, считать, что максимум рейтинга в нем --- 0)
     public static Optional<Album> minMaxRating(Stream<Album> albums) {
-        throw new UnsupportedOperationException();
+        return albums
+                .min(
+                        Comparator.comparingInt(
+                                album -> album.getTracks()
+                                        .stream()
+                                        .mapToInt(Track::getRating)
+                                        .max()
+                                        .orElse(0)
+                        )
+                );
     }
 
     // Список альбомов, отсортированный по убыванию среднего рейтинга его треков (0, если треков нет)
     public static List<Album> sortByAverageRating(Stream<Album> albums) {
-        throw new UnsupportedOperationException();
+        return albums
+                .sorted(
+                        Comparator.comparingDouble(
+                                (Album album) -> album.getTracks()
+                                        .stream()
+                                        .mapToInt(Track::getRating)
+                                .average()
+                                .orElse(0)
+                        )
+                        .reversed()
+                )
+                .collect(
+                        Collectors.toList()
+                );
     }
 
     // Произведение всех чисел потока по модулю 'modulo'
     // (все числа от 0 до 10000)
     public static int moduloProduction(IntStream stream, int modulo) {
-        return stream.reduce(1, (res, x) -> res * x % modulo);
+        return stream
+                .reduce(1, (res, x) -> res * x % modulo);
     }
 
     // Вернуть строку, состояющую из конкатенаций переданного массива, и окруженную строками "<", ">"
@@ -105,6 +135,6 @@ public final class FirstPartTasks {
 
     // Вернуть поток из объектов класса 'clazz'
     public static <R> Stream<R> filterIsInstance(Stream<?> s, Class<R> clazz) {
-        return (Stream<R>) s.filter(o -> clazz.isInstance(o));
+        return (Stream<R>) s.filter(clazz::isInstance);
     }
 }
