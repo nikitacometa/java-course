@@ -1,5 +1,6 @@
 package ru.spbau.gorokhov;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 
 import java.io.File;
@@ -59,11 +60,67 @@ public class SecondPartTasksTest {
 
     @Test
     public void testFindPrinter() {
+        Map<String, List<String>> compositions = ImmutableMap.of(
+                "Vasya", Arrays.asList("blablablablablablabla", "aaaaaaaaaaaaaaa", "bbbbbbbbbbbbb"),
+                "Petya", Arrays.asList("dog", "cat", "bus", "hat", "fat"),
+                "Vanya", Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h")
+        );
+
+        String actual = "";
+        try {
+            actual = findPrinter(compositions);
+        } catch (Exception e) {
+            fail();
+        }
+        assertEquals(
+                "Vasya",
+                actual
+        );
+
+        try {
+            String author = findPrinter(Collections.emptyMap());
+        } catch (Exception e) {
+            return;
+        }
         fail();
     }
 
     @Test
     public void testCalculateGlobalOrder() {
-        fail();
+        List<Map<String, Integer>> orders = Arrays.asList(
+                ImmutableMap.of(
+                        "Tea", 2,
+                        "iPhone", 10,
+                        "Pixel", 3
+                ),
+                ImmutableMap.of(
+                        "iPhone", 100,
+                        "Pixel", 30,
+                        "Macbook", 7
+                ),
+                ImmutableMap.of(
+                        "iPhone", 1,
+                        "Tea", 20,
+                        "Cookies", 100500
+                )
+        );
+
+        Map<String, Integer> expected = ImmutableMap.of(
+                "Tea", 22,
+                "iPhone", 111,
+                "Pixel", 33,
+                "Macbook", 7,
+                "Cookies", 100500
+        );
+
+        assertEquals(
+                expected,
+                calculateGlobalOrder(orders)
+        );
+
+        assertEquals(
+                Collections.emptyMap(),
+                calculateGlobalOrder(Collections.emptyList())
+        );
     }
 }
