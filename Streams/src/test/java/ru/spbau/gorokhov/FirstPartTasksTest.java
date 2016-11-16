@@ -1,6 +1,6 @@
 package ru.spbau.gorokhov;
 
-//import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -65,7 +65,7 @@ public class FirstPartTasksTest {
                 Collections.emptyList(),
                 sortedFavorites(Stream.of()));
     }
-/*
+
     @Test
     public void testGroupByArtist() {
         assertEquals(
@@ -93,7 +93,7 @@ public class FirstPartTasksTest {
                 Collections.emptyMap(),
                 groupByArtistMapName(Stream.of()));
     }
-*/
+
     @Test
     public void testCountAlbumDuplicates() {
         assertEquals(

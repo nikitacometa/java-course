@@ -3,12 +3,9 @@ package ru.spbau.gorokhov;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by wackloner on 14.11.2016.
@@ -39,12 +36,29 @@ public final class SecondPartTasks {
     // Стрелок атакует мишень и каждый раз попадает в произвольную точку квадрата.
     // Надо промоделировать этот процесс с помощью класса java.util.Random и посчитать, какова вероятность попасть в мишень.
     public static double piDividedBy4() {
-        throw new UnsupportedOperationException();
+        class Point {
+            double x, y;
+            Point(double x, double y) {
+                this.x = x;
+                this.y = y;
+            }
+            double squaredDist(Point p) {
+                return (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
+            }
+        }
+        Random random = new Random();
+        int pointsNumber = 10000000;
+        double squaredR = 0.25;
+        Point center = new Point(0.5, 0.5);
+        return Stream.generate(() -> new Point(random.nextDouble(), random.nextDouble()))
+                .limit(pointsNumber)
+                .filter(p -> p.squaredDist(center) <= squaredR)
+                .count() * 1. / pointsNumber;
     }
 
     // Дано отображение из имени автора в список с содержанием его произведений.
     // Надо вычислить, чья общая длина произведений наибольшая.
-    public static String findPrinter(Map<String, List<String>> compositions) {
+    public static String findPrinter(Map<String, List<String>> compositions) throws Exception {
         return compositions.entrySet()
                 .stream()
                 .max(
@@ -55,7 +69,7 @@ public final class SecondPartTasks {
                                 .sum()
                         )
                 )
-                .get() //TODO: empty map handling
+                .orElseThrow(() -> new Exception("Empty map!"))
                 .getKey();
     }
 
@@ -66,9 +80,10 @@ public final class SecondPartTasks {
                 .stream()
                 .flatMap(order -> order.entrySet().stream())
                 .collect(
-                        HashMap::new,
-                        (Map<String, Integer> map, Map.Entry<String, Integer> element) -> map.put(element.getKey(), map.getOrDefault(element.getKey(), 0) + element.getValue()),
-                        (map1, map2) -> map1.putAll(map2)
+                        Collectors.groupingBy(
+                                Map.Entry::getKey,
+                                Collectors.summingInt(Map.Entry::getValue)
+                        )
                 );
     }
 }
