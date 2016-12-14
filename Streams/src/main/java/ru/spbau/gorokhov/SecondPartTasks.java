@@ -36,13 +36,15 @@ public final class SecondPartTasks {
     // Стрелок атакует мишень и каждый раз попадает в произвольную точку квадрата.
     // Надо промоделировать этот процесс с помощью класса java.util.Random и посчитать, какова вероятность попасть в мишень.
     public static double piDividedBy4() {
-        class Point {
-            double x, y;
-            Point(double x, double y) {
+        final class Point {
+            private double x, y;
+
+            public Point(double x, double y) {
                 this.x = x;
                 this.y = y;
             }
-            double squaredDist(Point p) {
+
+            public double squaredDist(Point p) {
                 return (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
             }
         }
@@ -58,7 +60,7 @@ public final class SecondPartTasks {
 
     // Дано отображение из имени автора в список с содержанием его произведений.
     // Надо вычислить, чья общая длина произведений наибольшая.
-    public static String findPrinter(Map<String, List<String>> compositions) throws Exception {
+    public static String findPrinter(Map<String, List<String>> compositions) throws IllegalArgumentException {
         return compositions.entrySet()
                 .stream()
                 .max(
@@ -69,7 +71,7 @@ public final class SecondPartTasks {
                                 .sum()
                         )
                 )
-                .orElseThrow(() -> new Exception("Empty map!"))
+                .orElseThrow(() -> new IllegalArgumentException("Empty map!"))
                 .getKey();
     }
 

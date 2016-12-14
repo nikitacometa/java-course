@@ -44,7 +44,7 @@ public final class FirstPartTasks {
                                 .stream()
                                 .anyMatch(track -> track.getRating() > 95)
                 )
-                .sorted((a, b) -> a.getName().compareTo(b.getName()))
+                .sorted(Comparator.comparing(Album::getName))
                 .collect(Collectors.toList());
     }
 

@@ -55,7 +55,7 @@ public class SecondPartTasksTest {
         double EPS = 1e-2;
         double expected = Math.PI / 4;
         double actual = piDividedBy4();
-        assertTrue(Math.abs(expected - actual) < EPS);
+        assertEquals(expected, actual, EPS);
     }
 
     @Test
@@ -66,20 +66,14 @@ public class SecondPartTasksTest {
                 "Vanya", Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h")
         );
 
-        String actual = "";
-        try {
-            actual = findPrinter(compositions);
-        } catch (Exception e) {
-            fail();
-        }
         assertEquals(
                 "Vasya",
-                actual
+                findPrinter(compositions)
         );
 
         try {
             String author = findPrinter(Collections.emptyMap());
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             return;
         }
         fail();
