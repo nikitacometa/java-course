@@ -1,13 +1,15 @@
 package ru.spbau.gorokhov;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.function.Supplier;
 
 /**
  * Factory class that can create different Lazy interface implementations instances.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LazyFactory {
-    private LazyFactory() {}
-
     /**
      * Method that returns single thread Lazy implementation instance
      * for performing a computation.
