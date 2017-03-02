@@ -86,8 +86,6 @@ public class LazyTest<T> {
         Lazy<T> lazy = LazyFactory.createMultiThreadLockFreeLazy(countSupplier);
 
         checkResultUniqueness(lazy);
-
-        System.out.println(countSupplier.getGetCount());
     }
 
     private void checkResultUniqueness(Lazy<T> lazy) throws InterruptedException {
