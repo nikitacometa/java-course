@@ -27,13 +27,10 @@ public class SHA1Encoder {
     }
 
     private static byte[] objectToBytes(Object object) {
-        try (ByteArrayOutputStream byteStream = new ByteArrayOutputStream()){
-            try (ObjectOutputStream objectStream = new ObjectOutputStream(byteStream)){
-                objectStream.writeObject(object);
-            } catch (IOException e) {
-                throw e;
-            }
-            return byteStream.toByteArray();
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(baos)){
+            oos.writeObject(object);
+            return baos.toByteArray();
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

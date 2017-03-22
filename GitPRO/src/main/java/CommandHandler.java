@@ -71,13 +71,29 @@ public class CommandHandler {
     }
 
     void createBranch(String branchName) throws GitPROException {
-        Path branchPath = getBranchPath(branchName);
-        if (Files.exists(branchPath)) {
+        if (branchExists(branchName)) {
             throw new GitPROException("Failed to create branch: branch with specified name already exists");
         }
         String lastRevisionHash = getLastRevisionHash();
         Branch newBranch = new Branch(branchName, lastRevisionHash);
+        Path branchPath = getBranchPath(branchName);
         ObjectIO.writeObject(branchPath, newBranch);
+    }
+
+    void deleteBranch(String branchName) throws GitPROException {
+        if (!branchExists(branchName)) {
+            throw new GitPROException("Failed to delete branch: branch with specified name doesn't exist.");
+        }
+        Head head = getHead();
+        if (head.getRevisionType().equals(Branch.TYPE) && head.getRevisionName().equals(branchName)) {
+            throw new GitPROException("Failed to delete branch: currently on specified branch.");
+        }
+        Path branchPath = getBranchPath(branchName);
+        try {
+            Files.delete(branchPath);
+        } catch (IOException e) {
+            throw new GitPROException("Failed to delete branch: ", e);
+        }
     }
 
     private String getLastRevisionHash() {
@@ -87,6 +103,11 @@ public class CommandHandler {
 
     void loadRepository() {
 
+    }
+
+    private boolean branchExists(String branchName) {
+        Path branchPath = getBranchPath(branchName);
+        return Files.exists(branchPath);
     }
 
     private void writeBranch(Branch branch) throws GitPROException {
