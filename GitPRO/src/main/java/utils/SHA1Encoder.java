@@ -1,13 +1,18 @@
 package utils;
 
+import exceptions.GitPROException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by wackloner on 22-Mar-17.
  */
 public class SHA1Encoder {
+    private static final String ALGORITHM_NAME = "SHA-1";
 
     private static final char[] hexArray = "0123456789ABCDEF".toCharArray();
 
@@ -34,8 +39,14 @@ public class SHA1Encoder {
         }
     }
 
-    public static String getHash(Object object) {
-        // TODO
-        return null;
+    public static String getHash(Object object) throws GitPROException {
+        try {
+            MessageDigest md = MessageDigest.getInstance(ALGORITHM_NAME);
+            byte[] objectBytes = objectToBytes(object);
+            byte[] byteHash = md.digest(objectBytes);
+            return bytesToHex(byteHash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new GitPROException("Failed to load encrypting algorithm.", e);
+        }
     }
 }

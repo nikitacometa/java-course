@@ -19,7 +19,7 @@ public class CommandHandler {
     private final static String HEAD_FILE_NAME = "HEAD";
     private final static String INDEX_FILE_NAME = "index";
 
-    private final static String MASTER_BRANCH = "master";
+    private final static String MASTER_BRANCH_NAME = "master";
 
     private final Path directory;
     private final Path gitDirectory;
@@ -45,7 +45,7 @@ public class CommandHandler {
             Index emptyIndex = new Index();
             writeIndex(emptyIndex);
 
-            Head initHead = new Head(Branch.TYPE, "master");
+            Head initHead = new Head(Branch.TYPE, MASTER_BRANCH_NAME);
             writeHead(initHead);
 
             Tree emptyTree = new Tree();
@@ -56,7 +56,7 @@ public class CommandHandler {
             writeCommit(initCommit);
 
             String initCommitHash = SHA1Encoder.getHash(initCommit);
-            Branch masterBranch = new Branch("master", initCommitHash);
+            Branch masterBranch = new Branch(MASTER_BRANCH_NAME, initCommitHash);
             writeBranch(masterBranch);
         } catch (IOException e) {
             throw new GitPROException("Failed to init new repository. ", e);
