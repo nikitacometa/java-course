@@ -1,6 +1,8 @@
-import gitpro.CommandHandler;
 import gitpro.GitPRO;
 import gitpro.exceptions.GitPROException;
+
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * Created by wackloner on 21-Mar-17.
@@ -23,14 +25,16 @@ public class ConsoleApplication {
 
     public static void main(String[] args) {
         try {
-            parseArguments(args);
+            Scanner wow = new Scanner(System.in);
+            String[] wowArgs = wow.nextLine().split(" ");
+            parseArguments(wowArgs);
+//            parseArguments(args);
         } catch (GitPROException e) {
-            // FIXME
+            System.err.println(e.getMessage());
             e.printStackTrace();
         }
     }
 
-    // FIXME PLEASE i'm dying
     private static void parseArguments(String[] args) throws GitPROException {
         if (args.length == 0) {
             showMessageMissing("Command ");
@@ -49,6 +53,7 @@ public class ConsoleApplication {
 
         if (command.equals(INIT_COMMAND)) {
             gitPRO.initNewRepository();
+            showSuccessMessage("Empty repository was created!");
             return;
         }
 
@@ -60,7 +65,8 @@ public class ConsoleApplication {
                     showMessageMissing("Commit message");
                 } else {
                     String commitMessage = args[1];
-                    // TODO
+                    gitPRO.commit(commitMessage);
+                    showSuccessMessage("Commit was made!");
                 }
                 break;
 
@@ -83,7 +89,8 @@ public class ConsoleApplication {
                 break;
 
             case LOG_COMMAND:
-                // TODO
+                List<String> log = gitPRO.getLog();
+                log.forEach(System.out::println);
                 break;
 
             case ADD_COMMAND:
@@ -92,7 +99,8 @@ public class ConsoleApplication {
                 } else {
                     for (int i = 1; i < args.length; i++) {
                         String fileName = args[i];
-                        // TODO
+                        gitPRO.indexFile(fileName);
+                        showSuccessMessage(fileName + " was added!");
                     }
                 }
                 break;
@@ -102,7 +110,8 @@ public class ConsoleApplication {
                     showMessageMissing("Branch name");
                 } else {
                     String branchName = args[1];
-                    // TODO
+                    gitPRO.createBranch(branchName);
+                    showSuccessMessage("Branch '" + branchName + "' was created!");
                 }
                 break;
 
@@ -111,20 +120,29 @@ public class ConsoleApplication {
                     showMessageMissing("Branch name");
                 } else {
                     String branchName = args[1];
-                    // TODO
+                    gitPRO.deleteBranch(branchName);
+                    showSuccessMessage("Branch '" + branchName + "' was removed!");
                 }
                 break;
 
             default:
-                System.out.println("Error, invalid argument. " + SUGGEST_HELP_LINE);
+                showErrorMessage("Invalid argument! " + SUGGEST_HELP_LINE);
         }
     }
 
+    private static void showErrorMessage(String message) {
+        System.out.println("Error! " + message + "\n");
+    }
+
+    private static void showSuccessMessage(String message) {
+        System.out.println("Success! " + message + "\n");
+    }
+
     private static void showMessageMissing(String argumentName) {
-        System.out.println("Error, argument is missing! " + argumentName + " is required. " + SUGGEST_HELP_LINE);
+        showErrorMessage("Argument is missing! " + argumentName + " is required. " + SUGGEST_HELP_LINE + "\n");
     }
 
     private static void showHelp() {
-
+        System.out.println("come on, man, you know how it works, you've watched the code");
     }
 }

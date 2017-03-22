@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +19,7 @@ import java.util.stream.Collectors;
  */
 public class CommandHandler {
     private final static String GIT_FOLDER_NAME = ".gitPRO";
-    private final static String OBJECTS_FOLDER = "gitpro/objects";
+    private final static String OBJECTS_FOLDER = "objects";
     private final static String BRANCHES_FOLDER = "branches";
 
     private final static String HEAD_FILE_NAME = "HEAD";
@@ -41,7 +43,7 @@ public class CommandHandler {
 
     void initRepository() throws GitPROException {
         if (Files.exists(gitDirectory)) {
-            throw new GitPROException("Fail to init new repository, repository already exists in current currentDirectory.");
+            throw new GitPROException("Fail to init new repository, repository already exists in current directory.");
         }
         try {
             Files.createDirectory(gitDirectory);
@@ -57,7 +59,7 @@ public class CommandHandler {
             writeTree(emptyTree);
 
             String emptyTreeHash = SHA1Encoder.getHash(emptyTree);
-            Commit initCommit = new Commit("init commit", emptyTreeHash);
+            Commit initCommit = new Commit("init commit", emptyTreeHash, null);
             writeCommit(initCommit);
 
             String initCommitHash = SHA1Encoder.getHash(initCommit);
@@ -68,7 +70,7 @@ public class CommandHandler {
         }
     }
 
-    void addFile(String fileName) throws GitPROException {
+    void indexFile(String fileName) throws GitPROException {
         Path filePath = getFilePath(fileName);
         Index index = getIndex();
         index.addFile(filePath);
@@ -82,7 +84,7 @@ public class CommandHandler {
         Tree currentTree = buildTree(currentDirectory);
         writeTree(currentTree);
         String treeHash = SHA1Encoder.getHash(currentTree);
-        Commit newCommit = new Commit(message, treeHash);
+        Commit newCommit = new Commit(message, treeHash, getLastRevisionHash());
         writeCommit(newCommit);
         String commitHash = SHA1Encoder.getHash(newCommit);
         Head currentHead = getHead();
@@ -158,14 +160,33 @@ public class CommandHandler {
         }
     }
 
+    List<String> getLog() throws GitPROException {
+        List<String> result = new ArrayList<>();
+        String commitHash = getLastRevisionHash();
+        while (true) {
+            Commit commit = getCommit(commitHash);
+            result.add(commitToString(commit));
+            commitHash = commit.getPreviousCommitHash();
+            if (commitHash == null) {
+                break;
+            }
+        }
+        return result;
+    }
+
     private void updateHead(String type, String name) throws GitPROException {
         Head newHead = new Head(type, name);
         writeHead(newHead);
     }
 
-    private String getLastRevisionHash() {
-        // TODO
-        return null;
+    private String getLastRevisionHash() throws GitPROException {
+        Head head = getHead();
+        if (head.getRevisionType().equals(Commit.TYPE)) {
+            return head.getRevisionName();
+        } else {
+            Branch currentBranch = getBranch(head.getRevisionName());
+            return currentBranch.getCommitHash();
+        }
     }
 
     void loadRepository() {
@@ -191,6 +212,10 @@ public class CommandHandler {
         String hash = SHA1Encoder.getHash(tree);
         Path path = getGitObjectPath(hash);
         ObjectIO.writeObject(path, tree);
+    }
+
+    private Commit getCommit(String hash) throws GitPROException {
+        return (Commit) ObjectIO.readObject(getGitObjectPath(hash));
     }
 
     private void writeCommit(Commit commit) throws GitPROException {
@@ -232,5 +257,13 @@ public class CommandHandler {
 
     private Path getBranchPath(String branchName) {
         return Paths.get(branchesDirectory.toString(), branchName);
+    }
+
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy 'at' HH:mm");
+
+    private String commitToString(Commit commit) throws GitPROException {
+        String commitHash = SHA1Encoder.getHash(commit);
+        return commitHash + " " + DATE_FORMAT.format(commit.getDate()) + " by " +
+                commit.getAuthor() + ": " + commit.getMessage();
     }
 }

@@ -4,6 +4,7 @@ import gitpro.exceptions.GitPROException;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * Created by wackloner on 22-Mar-17.
@@ -27,6 +28,10 @@ public class GitPRO {
         commandHandler.loadRepository();
     }
 
+    public void indexFile(String fileName) throws GitPROException {
+        commandHandler.indexFile(fileName);
+    }
+
     public void commit(String message) throws GitPROException {
         commandHandler.commit(message);
     }
@@ -45,5 +50,9 @@ public class GitPRO {
 
     public void merge(String branchName) {
 
+    }
+
+    public List<String> getLog() throws GitPROException {
+        return commandHandler.getLog();
     }
 }

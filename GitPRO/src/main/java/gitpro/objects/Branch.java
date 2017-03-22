@@ -8,11 +8,11 @@ import lombok.Setter;
  * Created by wackloner on 22-Mar-17.
  */
 @AllArgsConstructor
+@Getter
 public class Branch extends GitObject {
     public static final String TYPE = "branch";
 
-    @Getter
-    private String name;
+    private final String name;
     @Setter
     private String commitHash;
 }
