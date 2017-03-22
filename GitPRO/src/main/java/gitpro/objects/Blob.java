@@ -1,4 +1,4 @@
-package objects;
+package gitpro.objects;
 
 import java.io.Serializable;
 

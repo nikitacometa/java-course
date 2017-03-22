@@ -1,6 +1,6 @@
-package utils;
+package gitpro.utils;
 
-import exceptions.GitPROException;
+import gitpro.exceptions.GitPROException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

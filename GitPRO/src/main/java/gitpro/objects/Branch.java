@@ -1,4 +1,4 @@
-package objects;
+package gitpro.objects;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

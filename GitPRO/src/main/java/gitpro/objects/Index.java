@@ -1,4 +1,4 @@
-package objects;
+package gitpro.objects;
 
 import java.io.Serializable;
 import java.nio.file.Path;
@@ -19,5 +19,9 @@ public class Index implements Serializable {
         if (!indexedFiles.contains(filePath)) {
             indexedFiles.add(filePath);
         }
+    }
+
+    public boolean contains(Path filePath) {
+        return indexedFiles.contains(filePath);
     }
 }

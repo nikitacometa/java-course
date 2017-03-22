@@ -1,4 +1,6 @@
-import exceptions.GitPROException;
+import gitpro.CommandHandler;
+import gitpro.GitPRO;
+import gitpro.exceptions.GitPROException;
 
 /**
  * Created by wackloner on 21-Mar-17.
@@ -43,14 +45,14 @@ public class ConsoleApplication {
         }
 
         String currentDirectory = System.getProperty("user.dir");
-        CommandHandler commandHandler = new CommandHandler(currentDirectory);
+        GitPRO gitPRO = new GitPRO(currentDirectory);
 
         if (command.equals(INIT_COMMAND)) {
-            commandHandler.initRepository();
+            gitPRO.initNewRepository();
             return;
         }
 
-        commandHandler.loadRepository();
+        gitPRO.loadRepository();
 
         switch (command) {
             case COMMIT_COMMAND:

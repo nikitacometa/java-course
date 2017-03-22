@@ -1,4 +1,4 @@
-package exceptions;
+package gitpro.exceptions;
 
 /**
  * Created by wackloner on 22-Mar-17.

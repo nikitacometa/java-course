@@ -1,19 +1,23 @@
-import exceptions.GitPROException;
-import objects.*;
-import utils.ObjectIO;
-import utils.SHA1Encoder;
+package gitpro;
+
+import gitpro.exceptions.GitPROException;
+import gitpro.objects.*;
+import gitpro.utils.ObjectIO;
+import gitpro.utils.SHA1Encoder;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by wackloner on 21-Mar-17.
  */
 public class CommandHandler {
     private final static String GIT_FOLDER_NAME = ".gitPRO";
-    private final static String OBJECTS_FOLDER = "objects";
+    private final static String OBJECTS_FOLDER = "gitpro/objects";
     private final static String BRANCHES_FOLDER = "branches";
 
     private final static String HEAD_FILE_NAME = "HEAD";
@@ -21,13 +25,15 @@ public class CommandHandler {
 
     private final static String MASTER_BRANCH_NAME = "master";
 
-    private final Path directory;
+    private final Path currentDirectory;
     private final Path gitDirectory;
     private final Path objectsDirectory;
     private final Path branchesDirectory;
 
-    CommandHandler(String directory) {
-        this.directory = Paths.get(directory);
+    private Index index = null;
+
+    CommandHandler(Path currentDirectory) {
+        this.currentDirectory = currentDirectory;
         this.gitDirectory = getFilePath(GIT_FOLDER_NAME);
         this.objectsDirectory = getGitFilePath(OBJECTS_FOLDER);
         this.branchesDirectory = getGitFilePath(BRANCHES_FOLDER);
@@ -35,7 +41,7 @@ public class CommandHandler {
 
     void initRepository() throws GitPROException {
         if (Files.exists(gitDirectory)) {
-            throw new GitPROException("Fail to init new repository, repository already exists in current directory.");
+            throw new GitPROException("Fail to init new repository, repository already exists in current currentDirectory.");
         }
         try {
             Files.createDirectory(gitDirectory);
@@ -52,7 +58,7 @@ public class CommandHandler {
             writeTree(emptyTree);
 
             String emptyTreeHash = SHA1Encoder.getHash(emptyTree);
-            Commit initCommit = new Commit(emptyTreeHash);
+            Commit initCommit = new Commit("init commit", emptyTreeHash);
             writeCommit(initCommit);
 
             String initCommitHash = SHA1Encoder.getHash(initCommit);
@@ -67,7 +73,50 @@ public class CommandHandler {
         Path filePath = getFilePath(fileName);
         Index index = getIndex();
         index.addFile(filePath);
+        if (!Files.isDirectory(filePath)) {
+            index.addFile(filePath.getParent());
+        }
         writeIndex(index);
+    }
+
+    void commit(String message) throws GitPROException {
+        Tree currentTree = buildTree(currentDirectory);
+        writeTree(currentTree);
+        String treeHash = SHA1Encoder.getHash(currentTree);
+        Commit newCommit = new Commit(message, treeHash);
+    }
+
+    private Tree buildTree(Path directory) throws GitPROException {
+        Index index = getIndex();
+        try {
+            List<Path> paths = Files.list(directory)
+                    .filter(index::contains)
+                    .collect(Collectors.toList());
+            Tree tree = new Tree();
+            for (Path path : paths) {
+                tree.addChildren(getEdge(path));
+            }
+            return tree;
+        } catch (IOException e) {
+            throw new GitPROException("Failed to list files in directory: ", e);
+        }
+    }
+
+    private Tree.Edge getEdge(Path path) throws GitPROException {
+        if (Files.isDirectory(path)) {
+            Tree tree = buildTree(path);
+            String hash = SHA1Encoder.getHash(tree);
+            return new Tree.Edge(path, Tree.TYPE, hash);
+        } else {
+            Blob blob = makeBlob(path);
+            String hash = SHA1Encoder.getHash(blob);
+            return new Tree.Edge(path, Blob.TYPE, hash);
+        }
+    }
+
+    private Blob makeBlob(Path file) {
+        // FIXME
+        return null;
     }
 
     void createBranch(String branchName) throws GitPROException {
@@ -136,7 +185,10 @@ public class CommandHandler {
     }
 
     private Index getIndex() throws GitPROException {
-        return (Index) ObjectIO.readObject(getGitFilePath(INDEX_FILE_NAME));
+        if (index == null) {
+            index = (Index) ObjectIO.readObject(getGitFilePath(INDEX_FILE_NAME));
+        }
+        return index;
     }
 
     private void writeIndex(Index index) throws GitPROException {
@@ -144,7 +196,7 @@ public class CommandHandler {
     }
 
     private Path getFilePath(String fileName) {
-        return Paths.get(directory.toString(), fileName);
+        return Paths.get(currentDirectory.toString(), fileName);
     }
 
     private Path getGitFilePath(String fileName) {

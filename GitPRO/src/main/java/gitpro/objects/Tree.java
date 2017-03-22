@@ -1,6 +1,10 @@
-package objects;
+package gitpro.objects;
+
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
 
 import java.io.Serializable;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,8 +20,13 @@ public class Tree extends TreeNode implements Serializable {
         children = Collections.emptyList();
     }
 
-    public class Edge implements Serializable {
-        private String name;
+    public void addChildren(Edge edge) {
+        children.add(edge);
+    }
+
+    @AllArgsConstructor
+    public static class Edge implements Serializable {
+        private Path path;
         private String nodeType;
         private String nodeHash;
     }
