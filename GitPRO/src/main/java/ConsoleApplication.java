@@ -22,16 +22,24 @@ public class ConsoleApplication {
             showMessageMissing("Command ");
             return;
         }
+
         String command = args[0];
+
         if (command.equals(HELP_COMMAND)) {
             showHelp();
             return;
         }
+
+        String currentDirectory = System.getProperty("user.dir");
+        CommandHandler commandHandler = new CommandHandler(currentDirectory);
+
         if (command.equals(INIT_COMMAND)) {
-            initRepository();
+            commandHandler.initRepository();
             return;
         }
-        // TODO load repo
+
+        commandHandler.loadRepository();
+
         switch (command) {
             case COMMIT_COMMAND:
                 if (args.length == 1) {
@@ -41,6 +49,7 @@ public class ConsoleApplication {
                     // TODO
                 }
                 break;
+
             case CHECKOUT_COMMAND:
                 if (args.length == 1) {
                     showMessageMissing("Branch name");
@@ -49,6 +58,7 @@ public class ConsoleApplication {
                     // TODO
                 }
                 break;
+
             case MERGE_COMMAND:
                 if (args.length == 1) {
                     showMessageMissing("Branch name");
@@ -57,9 +67,11 @@ public class ConsoleApplication {
                     // TODO
                 }
                 break;
+
             case LOG_COMMAND:
                 // TODO
                 break;
+
             case ADD_COMMAND:
                 if (args.length == 1) {
                     showMessageMissing("File name");
@@ -70,6 +82,7 @@ public class ConsoleApplication {
                     }
                 }
                 break;
+
             case NEW_BRANCH_COMMAND:
                 if (args.length == 1) {
                     showMessageMissing("Branch name");
@@ -78,6 +91,7 @@ public class ConsoleApplication {
                     // TODO
                 }
                 break;
+
             case REMOVE_BRANCH_COMMAND:
                 if (args.length == 1) {
                     showMessageMissing("Branch name");
@@ -86,6 +100,7 @@ public class ConsoleApplication {
                     // TODO
                 }
                 break;
+
             default:
                 System.out.println("Error, invalid argument. " + SUGGEST_HELP_LINE);
         }
@@ -93,10 +108,6 @@ public class ConsoleApplication {
 
     private static void showMessageMissing(String argumentName) {
         System.out.println("Error, argument is missing! " + argumentName + " is required. " + SUGGEST_HELP_LINE);
-    }
-
-    private static void initRepository() {
-
     }
 
     private static void showHelp() {
