@@ -1,3 +1,5 @@
+import exceptions.GitPROException;
+
 /**
  * Created by wackloner on 21-Mar-17.
  */
@@ -18,6 +20,16 @@ public class ConsoleApplication {
             "Try \'" + APPLICATION_NAME + " " + HELP_COMMAND + "\' for usage info.";
 
     public static void main(String[] args) {
+        try {
+            parseArguments(args);
+        } catch (GitPROException e) {
+            // FIXME
+            e.printStackTrace();
+        }
+    }
+
+    // FIXME PLEASE i'm dying
+    private static void parseArguments(String[] args) throws GitPROException {
         if (args.length == 0) {
             showMessageMissing("Command ");
             return;
