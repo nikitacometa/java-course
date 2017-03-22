@@ -13,6 +13,7 @@ public class Commit extends GitObject {
     private Date date;
 
     public Commit(String message, String treeHash) {
+        this.message = message;
         this.treeHash = treeHash;
         this.date = new Date();
     }

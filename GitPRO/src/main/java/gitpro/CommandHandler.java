@@ -51,8 +51,7 @@ public class CommandHandler {
             Index emptyIndex = new Index();
             writeIndex(emptyIndex);
 
-            Head initHead = new Head(Branch.TYPE, MASTER_BRANCH_NAME);
-            writeHead(initHead);
+            updateHead(Branch.TYPE, MASTER_BRANCH_NAME);
 
             Tree emptyTree = new Tree();
             writeTree(emptyTree);
@@ -84,6 +83,16 @@ public class CommandHandler {
         writeTree(currentTree);
         String treeHash = SHA1Encoder.getHash(currentTree);
         Commit newCommit = new Commit(message, treeHash);
+        writeCommit(newCommit);
+        String commitHash = SHA1Encoder.getHash(newCommit);
+        Head currentHead = getHead();
+        if (currentHead.getRevisionType().equals(Branch.TYPE)) {
+            Branch currentBranch = getBranch(currentHead.getRevisionName());
+            currentBranch.setCommitHash(commitHash);
+            writeBranch(currentBranch);
+        } else {
+            updateHead(Commit.TYPE, commitHash);
+        }
     }
 
     private Tree buildTree(Path directory) throws GitPROException {
@@ -114,9 +123,13 @@ public class CommandHandler {
         }
     }
 
-    private Blob makeBlob(Path file) {
-        // FIXME
-        return null;
+    private Blob makeBlob(Path file) throws GitPROException {
+        try {
+            byte[] content = Files.readAllBytes(file);
+            return new Blob(content);
+        } catch (IOException e) {
+            throw new GitPROException("Failed to read file: ", e);
+        }
     }
 
     void createBranch(String branchName) throws GitPROException {
@@ -145,6 +158,11 @@ public class CommandHandler {
         }
     }
 
+    private void updateHead(String type, String name) throws GitPROException {
+        Head newHead = new Head(type, name);
+        writeHead(newHead);
+    }
+
     private String getLastRevisionHash() {
         // TODO
         return null;
@@ -162,6 +180,11 @@ public class CommandHandler {
     private void writeBranch(Branch branch) throws GitPROException {
         Path path = getBranchPath(branch.getName());
         ObjectIO.writeObject(path, branch);
+    }
+
+    private Branch getBranch(String branchName) throws GitPROException {
+        Path path = getBranchPath(branchName);
+        return (Branch) ObjectIO.readObject(path);
     }
 
     private void writeTree(Tree tree) throws GitPROException {
