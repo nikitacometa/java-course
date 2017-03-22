@@ -33,4 +33,9 @@ public class SHA1Encoder {
             throw new IllegalStateException(e);
         }
     }
+
+    public static String getHash(Object object) {
+        // TODO
+        return null;
+    }
 }

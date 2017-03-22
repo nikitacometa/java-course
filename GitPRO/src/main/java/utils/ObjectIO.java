@@ -13,24 +13,18 @@ import java.nio.file.Path;
  */
 public class ObjectIO {
     public static Object readObject(Path objectPath) throws GitPROException {
-        try (FileInputStream fis = new FileInputStream(objectPath.toString())) {
-            try (ObjectInputStream ois = new ObjectInputStream(fis)) {
-                return ois.readObject();
-            } catch (Exception e) {
-                throw e;
-            }
+        try (FileInputStream fis = new FileInputStream(objectPath.toString());
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            return ois.readObject();
         } catch (Exception e) {
             throw new GitPROException("Failed to read object.", e);
         }
     }
 
     public static void writeObject(Path objectPath, Object object) throws GitPROException {
-        try (FileOutputStream fos = new FileOutputStream(objectPath.toString())) {
-            try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-                oos.writeObject(object);
-            } catch (Exception e) {
-                throw e;
-            }
+        try (FileOutputStream fos = new FileOutputStream(objectPath.toString());
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(object);
         } catch (Exception e) {
             throw new GitPROException("Failed to write object.", e);
         }

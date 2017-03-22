@@ -1,7 +1,7 @@
 import exceptions.GitPROException;
-import objects.Head;
-import objects.Index;
+import objects.*;
 import utils.ObjectIO;
+import utils.SHA1Encoder;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,6 +18,8 @@ public class CommandHandler {
 
     private final static String HEAD_FILE_NAME = "HEAD";
     private final static String INDEX_FILE_NAME = "index";
+
+    private final static String MASTER_BRANCH = "master";
 
     private final Path directory;
     private final Path gitDirectory;
@@ -40,7 +42,22 @@ public class CommandHandler {
             Files.createDirectory(objectsDirectory);
             Files.createDirectory(branchesDirectory);
 
-            writeIndex(new Index());
+            Index emptyIndex = new Index();
+            writeIndex(emptyIndex);
+
+            Head initHead = new Head(Branch.TYPE, "master");
+            writeHead(initHead);
+
+            Tree emptyTree = new Tree();
+            writeTree(emptyTree);
+
+            String emptyTreeHash = SHA1Encoder.getHash(emptyTree);
+            Commit initCommit = new Commit(emptyTreeHash);
+            writeCommit(initCommit);
+
+            String initCommitHash = SHA1Encoder.getHash(initCommit);
+            Branch masterBranch = new Branch("master", initCommitHash);
+            writeBranch(masterBranch);
         } catch (IOException e) {
             throw new GitPROException("Failed to init new repository. ", e);
         }
@@ -53,8 +70,40 @@ public class CommandHandler {
         writeIndex(index);
     }
 
+    void createBranch(String branchName) throws GitPROException {
+        Path branchPath = getBranchPath(branchName);
+        if (Files.exists(branchPath)) {
+            throw new GitPROException("Failed to create branch: branch with specified name already exists");
+        }
+        String lastRevisionHash = getLastRevisionHash();
+        Branch newBranch = new Branch(branchName, lastRevisionHash);
+        ObjectIO.writeObject(branchPath, newBranch);
+    }
+
+    private String getLastRevisionHash() {
+        // TODO
+        return null;
+    }
+
     void loadRepository() {
 
+    }
+
+    private void writeBranch(Branch branch) throws GitPROException {
+        Path path = getBranchPath(branch.getName());
+        ObjectIO.writeObject(path, branch);
+    }
+
+    private void writeTree(Tree tree) throws GitPROException {
+        String hash = SHA1Encoder.getHash(tree);
+        Path path = getGitObjectPath(hash);
+        ObjectIO.writeObject(path, tree);
+    }
+
+    private void writeCommit(Commit commit) throws GitPROException {
+        String hash = SHA1Encoder.getHash(commit);
+        Path path = getGitObjectPath(hash);
+        ObjectIO.writeObject(path, commit);
     }
 
     private Head getHead() throws GitPROException {
@@ -79,5 +128,13 @@ public class CommandHandler {
 
     private Path getGitFilePath(String fileName) {
         return Paths.get(gitDirectory.toString(), fileName);
+    }
+
+    private Path getGitObjectPath(String objectName) {
+        return Paths.get(objectsDirectory.toString(), objectName);
+    }
+
+    private Path getBranchPath(String branchName) {
+        return Paths.get(branchesDirectory.toString(), branchName);
     }
 }
