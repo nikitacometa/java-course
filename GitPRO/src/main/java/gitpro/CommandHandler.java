@@ -114,7 +114,7 @@ class CommandHandler {
             try {
                 Files.walk(filePath).forEach(index::addFile);
             } catch (IOException e) {
-                throw new GitPROException("Unable to walt the directory " + filePath.toString() + " :(");
+                throw new GitPROException("Unable to walt the directory " + filePath.toString() + " :(", e);
             }
         }
         while (!filePath.equals(repositoryDirectory)) {
@@ -296,7 +296,7 @@ class CommandHandler {
                     Files.deleteIfExists(path);
                 }
             } catch (IOException e) {
-                throw new GitPROException("Can't delete file " + path.toString() + " :(");
+                throw new GitPROException("Can't delete file " + path.toString() + " :(", e);
             }
         }
     }
@@ -332,7 +332,7 @@ class CommandHandler {
                     Blob blob = getBlob(edge.getNodeHash());
                     Files.write(filePath, blob.getContent());
                 } catch (IOException e) {
-                    throw new GitPROException("Failed to update file!");
+                    throw new GitPROException("Failed to update file!", e);
                 }
             }
         }
