@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -282,9 +281,20 @@ class CommandHandler {
     }
 
     private void cleanFileSystem(Index index) throws GitPROException {
-        for (Path path : index.getIndexedFiles()) {
+        List<Path> paths = index.getIndexedFiles().stream()
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toList());
+        for (Path path : paths) {
             try {
-                Files.deleteIfExists(path);
+                if (Files.isDirectory(path)) {
+                    try {
+                        Files.deleteIfExists(path);
+                    } catch (IOException e) {
+                        // directory isn't empty
+                    }
+                } else {
+                    Files.deleteIfExists(path);
+                }
             } catch (IOException e) {
                 throw new GitPROException("Can't delete file " + path.toString() + " :(");
             }
@@ -308,7 +318,7 @@ class CommandHandler {
                     try {
                         Files.createDirectory(dirPath);
                     } catch (IOException e) {
-                        throw new GitPROException("Failed to create folder :(");
+                        throw new GitPROException("Failed to create folder :(", e);
                     }
                 }
 

@@ -13,11 +13,14 @@ import java.util.List;
 public class GitPRO {
     private CommandHandler commandHandler;
 
-    public GitPRO(Path currentDirectory) {
+    public GitPRO(Path currentDirectory) throws GitPROException {
+        if (!currentDirectory.isAbsolute()) {
+            throw new GitPROException("You have to provide absolute path to directory!");
+        }
         commandHandler = new CommandHandler(currentDirectory);
     }
 
-    public GitPRO(String currentDirectory) {
+    public GitPRO(String currentDirectory) throws GitPROException {
         this(Paths.get(currentDirectory));
     }
 
@@ -29,7 +32,7 @@ public class GitPRO {
         commandHandler.loadRepository();
     }
 
-    public void indexFile(String fileName) throws GitPROException {
+    public void add(String fileName) throws GitPROException {
         commandHandler.indexFile(fileName);
     }
 

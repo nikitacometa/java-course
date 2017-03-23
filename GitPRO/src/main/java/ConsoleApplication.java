@@ -2,10 +2,6 @@ import gitpro.GitPRO;
 import gitpro.exceptions.GitPROException;
 import gitpro.utils.CommitLog;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -102,7 +98,7 @@ public class ConsoleApplication {
                 } else {
                     for (int i = 1; i < args.length; i++) {
                         String fileName = args[i];
-                        gitPRO.indexFile(fileName);
+                        gitPRO.add(fileName);
                         showSuccessMessage(fileName + " was added!");
                     }
                 }
