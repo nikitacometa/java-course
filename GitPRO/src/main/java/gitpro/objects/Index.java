@@ -30,14 +30,6 @@ public class Index implements Serializable {
                 .collect(Collectors.toList());
     }
 
-    public boolean isEmpty() {
-        return indexedFiles.isEmpty();
-    }
-
-    public void clear() {
-        indexedFiles.clear();
-    }
-
     public boolean contains(Path filePath) {
         return indexedFiles.contains(filePath.toString());
     }
