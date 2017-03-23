@@ -1,6 +1,7 @@
 package gitpro;
 
 import gitpro.exceptions.GitPROException;
+import gitpro.utils.CommitLog;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,7 +25,7 @@ public class GitPRO {
         commandHandler.initRepository();
     }
 
-    public void loadRepository() {
+    public void loadRepository() throws GitPROException {
         commandHandler.loadRepository();
     }
 
@@ -52,7 +53,7 @@ public class GitPRO {
         commandHandler.merge(branchName);
     }
 
-    public List<String> getLog() throws GitPROException {
+    public List<CommitLog> getLog() throws GitPROException {
         return commandHandler.getLog();
     }
 }

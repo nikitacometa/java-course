@@ -1,6 +1,11 @@
 import gitpro.GitPRO;
 import gitpro.exceptions.GitPROException;
+import gitpro.utils.CommitLog;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -87,7 +92,7 @@ public class ConsoleApplication {
                 break;
 
             case LOG_COMMAND:
-                List<String> log = gitPRO.getLog();
+                List<CommitLog> log = gitPRO.getLog();
                 log.forEach(System.out::println);
                 break;
 
