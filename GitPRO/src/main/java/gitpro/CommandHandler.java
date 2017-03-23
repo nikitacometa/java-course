@@ -10,8 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -134,6 +133,121 @@ public class CommandHandler {
         }
     }
 
+    void checkout(String revisionName) throws GitPROException {
+        if (branchExists(revisionName)) {
+            Branch toBranch = getBranch(revisionName);
+
+        } else if (commitExists(revisionName)) {
+            Commit toCommit = getCommit(revisionName);
+
+        } else {
+            throw new GitPROException("Failed to checkout revision " + revisionName + "! No such revision exists.");
+        }
+    }
+
+    void merge(String branchName) throws GitPROException {
+        if (!branchExists(branchName)) {
+            throw new GitPROException("Failed to merge! Branch " + branchName + " doesn't exist!");
+        }
+        Branch mergingBranch = getBranch(branchName);
+        Commit mergingCommit = getCommit(mergingBranch.getCommitHash());
+        Tree mergingTree = getTree(mergingCommit.getTreeHash());
+
+        Commit currentCommit;
+        if (getHead().getRevisionType().equals(Commit.TYPE)) {
+            currentCommit = getCommit(getHead().getRevisionName());
+        } else {
+            Branch currentBranch = getBranch(getHead().getRevisionName());
+            currentCommit = getCommit(currentBranch.getCommitHash());
+        }
+        Tree currentTree = getTree(currentCommit.getTreeHash());
+
+        Tree newTree = mergeTrees(currentTree, mergingTree);
+        writeTree(newTree);
+
+        updateFileSystem(newTree);
+
+        String treeHash = SHA1Encoder.getHash(newTree);
+        String previousCommitHash = SHA1Encoder.getHash(currentCommit);
+        Commit newCommit = new Commit("merge branch " + branchName, treeHash, previousCommitHash);
+        writeCommit(newCommit);
+
+        String newCommitHash = SHA1Encoder.getHash(newCommit);
+        if (getHead().getRevisionType().equals(Commit.TYPE)) {
+            updateHead(Commit.TYPE, newCommitHash);
+        } else {
+            Branch currentBranch = getBranch(getHead().getRevisionName());
+            currentBranch.setCommitHash(newCommitHash);
+            writeBranch(currentBranch);
+        }
+    }
+
+    private Tree mergeTrees(Tree currentTree, Tree mergingTree) throws GitPROException {
+        Tree resultTree = new Tree();
+
+        List<Tree.Edge> currentChildren = currentTree.getChildren();
+        List<Tree.Edge> mergingChildren = mergingTree.getChildren();
+        currentChildren.sort(Comparator.comparing(Tree.Edge::getPath));
+        mergingChildren.sort(Comparator.comparing(Tree.Edge::getPath));
+
+        int i = 0, j = 0;
+        while (i < currentChildren.size() && j < mergingChildren.size()) {
+            Tree.Edge first = currentChildren.get(i);
+            Tree.Edge second = mergingChildren.get(j);
+            int compare = first.getPath().compareTo(second.getPath());
+            if (compare == 0) {
+                if (first.getNodeType().equals(Blob.TYPE)) {
+                    resultTree.addChildren(second);
+                } else {
+                    Tree firstTree = getTree(first.getNodeHash());
+                    Tree secondTree = getTree(second.getNodeHash());
+
+                    Tree yoloTree = mergeTrees(firstTree, secondTree);
+                    writeTree(yoloTree);
+                    String yoloTreeHash = SHA1Encoder.getHash(yoloTree);
+                    Tree.Edge newEdge = new Tree.Edge(first.getPath(), Tree.TYPE, yoloTreeHash);
+                    resultTree.addChildren(newEdge);
+                }
+                i++;
+                j++;
+            } else if (compare < 0) {
+                resultTree.addChildren(first);
+                i++;
+            } else {
+                resultTree.addChildren(second);
+                j++;
+            }
+        }
+        while (i < currentChildren.size()) {
+            resultTree.addChildren(currentChildren.get(i++));
+        }
+        while (j < mergingChildren.size()) {
+            resultTree.addChildren(mergingChildren.get(j++));
+        }
+        return resultTree;
+    }
+
+    private void updateFileSystem(Tree tree) throws GitPROException {
+        updateIndex(tree);
+    }
+
+    private void updateIndex(Tree tree) throws GitPROException {
+        Index index = getIndex();
+        index.clear();
+        fillIndex(tree, index);
+        writeIndex(index);
+    }
+
+    private void fillIndex(Tree tree, Index index) throws GitPROException {
+        for (Tree.Edge edge : tree.getChildren()) {
+            index.addFile(edge.getPath());
+            if (edge.getNodeType().equals(Tree.TYPE)) {
+                Tree childTree = getTree(edge.getNodeHash());
+                fillIndex(childTree, index);
+            }
+        }
+    }
+
     void createBranch(String branchName) throws GitPROException {
         if (branchExists(branchName)) {
             throw new GitPROException("Failed to create branch: branch with specified name already exists");
@@ -198,14 +312,28 @@ public class CommandHandler {
         return Files.exists(branchPath);
     }
 
-    private void writeBranch(Branch branch) throws GitPROException {
-        Path path = getBranchPath(branch.getName());
-        ObjectIO.writeObject(path, branch);
+    private boolean commitExists(String commitHash) throws GitPROException {
+        Path commitPath = getGitObjectPath(commitHash);
+        if (!Files.exists(commitPath)) {
+            return false;
+        }
+        Object object = ObjectIO.readObject(commitPath);
+        return object instanceof Commit;
     }
 
     private Branch getBranch(String branchName) throws GitPROException {
         Path path = getBranchPath(branchName);
         return (Branch) ObjectIO.readObject(path);
+    }
+
+    private void writeBranch(Branch branch) throws GitPROException {
+        Path path = getBranchPath(branch.getName());
+        ObjectIO.writeObject(path, branch);
+    }
+
+    private Tree getTree(String treeHash) throws GitPROException {
+        Path treePath = getGitObjectPath(treeHash);
+        return (Tree) ObjectIO.readObject(treePath);
     }
 
     private void writeTree(Tree tree) throws GitPROException {
@@ -263,7 +391,7 @@ public class CommandHandler {
 
     private String commitToString(Commit commit) throws GitPROException {
         String commitHash = SHA1Encoder.getHash(commit);
-        return commitHash + " " + DATE_FORMAT.format(commit.getDate()) + " by " +
+        return commitHash + " on " + DATE_FORMAT.format(commit.getDate()) + " by " +
                 commit.getAuthor() + ": " + commit.getMessage();
     }
 }

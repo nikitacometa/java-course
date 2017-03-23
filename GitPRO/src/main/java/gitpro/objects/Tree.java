@@ -1,5 +1,7 @@
 package gitpro.objects;
 
+import lombok.Getter;
+
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,6 +14,7 @@ import java.util.List;
 public class Tree extends TreeNode {
     public static final String TYPE = "tree";
 
+    @Getter
     private List<Edge> children;
 
     public Tree() {
@@ -24,7 +27,9 @@ public class Tree extends TreeNode {
 
     public static class Edge implements Serializable {
         private String path;
+        @Getter
         private String nodeType;
+        @Getter
         private String nodeHash;
 
         public Edge(Path path, String nodeType, String nodeHash) {

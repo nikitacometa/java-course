@@ -22,6 +22,14 @@ public class Index implements Serializable {
         }
     }
 
+    public boolean isEmpty() {
+        return indexedFiles.isEmpty();
+    }
+
+    public void clear() {
+        indexedFiles.clear();
+    }
+
     public boolean contains(Path filePath) {
         return indexedFiles.contains(filePath.toString());
     }

@@ -36,8 +36,8 @@ public class GitPRO {
         commandHandler.commit(message);
     }
 
-    public void checkout(String branchName) {
-
+    public void checkout(String branchName) throws GitPROException {
+        commandHandler.checkout(branchName);
     }
 
     public void createBranch(String branchName) throws GitPROException {
@@ -48,8 +48,8 @@ public class GitPRO {
         commandHandler.deleteBranch(branchName);
     }
 
-    public void merge(String branchName) {
-
+    public void merge(String branchName) throws GitPROException {
+        commandHandler.merge(branchName);
     }
 
     public List<String> getLog() throws GitPROException {

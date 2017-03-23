@@ -2,7 +2,6 @@ import gitpro.GitPRO;
 import gitpro.exceptions.GitPROException;
 
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Created by wackloner on 21-Mar-17.
@@ -25,10 +24,7 @@ public class ConsoleApplication {
 
     public static void main(String[] args) {
         try {
-            Scanner wow = new Scanner(System.in);
-            String[] wowArgs = wow.nextLine().split(" ");
-            parseArguments(wowArgs);
-//            parseArguments(args);
+            parseArguments(args);
         } catch (GitPROException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -75,7 +71,8 @@ public class ConsoleApplication {
                     showMessageMissing("Branch name");
                 } else {
                     String branchName = args[1];
-                    // TODO
+                    gitPRO.checkout(branchName);
+                    showSuccessMessage("Switched to branch " + branchName + ".");
                 }
                 break;
 
@@ -84,7 +81,8 @@ public class ConsoleApplication {
                     showMessageMissing("Branch name");
                 } else {
                     String branchName = args[1];
-                    // TODO
+                    gitPRO.merge(branchName);
+                    showSuccessMessage("Merged current branch into branch " + branchName + ".");
                 }
                 break;
 
@@ -143,6 +141,7 @@ public class ConsoleApplication {
     }
 
     private static void showHelp() {
+        // FIXME
         System.out.println("come on, man, you know how it works, you've watched the code");
     }
 }
