@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by wackloner on 30-Mar-17.
+ * Implements Encoder interface with one thread
  */
-public class OneThreadEncoder {
+public class OneThreadEncoder implements Encoder {
     public byte[] encode(Path path) throws IOException, NoSuchAlgorithmException {
         if (Files.isDirectory(path)) {
             return encodeDirectory(path);

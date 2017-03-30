@@ -8,9 +8,9 @@ import java.util.concurrent.RecursiveTask;
 import java.util.stream.Collectors;
 
 /**
- * Created by wackloner on 30-Mar-17.
+ * Implements Encoder interface using ForkJoinPool
  */
-public class ForkJoinEncoder {
+public class ForkJoinEncoder implements Encoder {
     public byte[] encode(Path path) {
         return new ForkJoinPool().invoke(new MD5Counter(path));
     }
