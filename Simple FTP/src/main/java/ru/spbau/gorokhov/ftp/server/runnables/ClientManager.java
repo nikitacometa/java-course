@@ -28,6 +28,7 @@ public class ClientManager implements Runnable {
                 newConnection = serverSocket.accept();
             } catch (IOException e) {
                 log.error("Failed to establish new connection.", e);
+                serverState.stop();
             }
             new Thread(new ConnectionHandler(newConnection, serverState)).start();
         }

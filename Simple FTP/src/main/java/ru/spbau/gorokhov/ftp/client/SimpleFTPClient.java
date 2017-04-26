@@ -45,8 +45,7 @@ public class SimpleFTPClient {
             serverOutput = new DataInputStream(serverSocket.getInputStream());
             hasConnection = true;
         } catch (IOException e) {
-            disconnect();
-            throw new SimpleFTPDisconnectedException();
+            throw new SimpleFTPDisconnectedException("Unable to connect to the server.");
         }
     }
 
@@ -106,12 +105,13 @@ public class SimpleFTPClient {
 
             ByteArrayOutputStream content = new ByteArrayOutputStream();
             byte[] buffer = new byte[BUFFER_SIZE];
-            long fileSize = serverOutput.readLong(), currentlyRead = 0;
-            while (currentlyRead < fileSize) {
-                int pieceSize = (int) Math.min(BUFFER_SIZE, fileSize - currentlyRead);
+            long totalBytes = serverOutput.readLong();
+            long readBytes = 0;
+            while (readBytes < totalBytes) {
+                int pieceSize = (int) Math.min(BUFFER_SIZE, totalBytes - readBytes);
                 serverOutput.read(buffer, 0, pieceSize);
                 content.write(buffer, 0, pieceSize);
-                currentlyRead += pieceSize;
+                readBytes += pieceSize;
             }
 
             return content.toByteArray();

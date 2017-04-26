@@ -35,14 +35,15 @@ class GetTask implements Runnable {
             } else {
                 try (FileInputStream inputStream = new FileInputStream(filePath.toFile())) {
                     byte[] buffer = new byte[BUFFER_SIZE];
-                    long totalBytes = Files.size(filePath), currentlyWrote = 0;
+                    long totalBytes = Files.size(filePath);
+                    long writtenBytes = 0;
 
                     clientInput.writeLong(totalBytes);
-                    while (currentlyWrote < totalBytes) {
-                        int pieceSize = (int) Math.min(BUFFER_SIZE, totalBytes - currentlyWrote);
+                    while (writtenBytes < totalBytes) {
+                        int pieceSize = (int) Math.min(BUFFER_SIZE, totalBytes - writtenBytes);
                         inputStream.read(buffer, 0, pieceSize);
                         clientInput.write(buffer, 0, pieceSize);
-                        currentlyWrote += pieceSize;
+                        writtenBytes += pieceSize;
                     }
 
                     log.info("File '" + fileName + "' was sent.");

@@ -18,6 +18,7 @@ public class ConsoleApplication {
     private static final String GET_COMMAND = "get";
     private static final String DISCONNECT_COMMAND = "disconnect";
     private static final String EXIT_COMMAND = "exit";
+    private static final String HELP_COMMAND = "help";
 
     private static final String SERVER_HOST = "localhost";
     private static final int SERVER_PORT = 8080;
@@ -31,7 +32,8 @@ public class ConsoleApplication {
 
     private void work() {
         SimpleFTPClient client = new SimpleFTPClient(SERVER_HOST, SERVER_PORT);
-        System.out.println("Welcome, enter your commands:");
+        System.out.println("Welcome, dear " + System.getProperty("user.name") + ", enter your commands!");
+        showHelp();
 
         Scanner console = new Scanner(System.in);
 
@@ -57,7 +59,9 @@ public class ConsoleApplication {
                         String fileName = console.next();
                         byte[] content = client.executeGet(fileName);
                         System.out.println("File '" + fileName + "' was downloaded, total " + content.length + " bytes.");
-                        process(fileName, content);
+                        if (SAVING_FILES_IN_TEMPORARY_DIRECTORY) {
+                            saveFile(fileName, content);
+                        }
                         break;
 
                     case DISCONNECT_COMMAND:
@@ -70,6 +74,10 @@ public class ConsoleApplication {
                         System.out.println("Good bye!");
                         break;
 
+                    case HELP_COMMAND:
+                        showHelp();
+                        break;
+
                     default:
                         System.out.println("Invalid command.");
                 }
@@ -79,11 +87,7 @@ public class ConsoleApplication {
         }
     }
 
-    private void process(String fileName, byte[] content) {
-        if (!SAVING_FILES_IN_TEMPORARY_DIRECTORY) {
-            return;
-        }
-
+    private void saveFile(String fileName, byte[] content) {
         try {
             Path directoryPath = Paths.get(TEMPORARY_DIRECTORY_NAME);
             if (!Files.exists(directoryPath) || !Files.isDirectory(directoryPath)) {
@@ -103,5 +107,16 @@ public class ConsoleApplication {
             System.out.println("Unable to save the file.");
             e.printStackTrace();
         }
+    }
+
+    private void showHelp() {
+        String help = "List of available commands:\n" +
+                "    connect             - connects to the  server\n" +
+                "    list DIRECTORY_NAME - lists all files and directories in DIRECTORY_NAME directory on the server\n" +
+                "    get FILE_NAME       - downloads FILE_NAME file from the server and saves it to temporary folder if SAVING_FILES_IN_TEMPORARY_FOLDER flag is set\n" +
+                "    disconnect          - disconnects from the server\n" +
+                "    exit                - exits application\n" +
+                "    help                - shows help";
+        System.out.println(help);
     }
 }
