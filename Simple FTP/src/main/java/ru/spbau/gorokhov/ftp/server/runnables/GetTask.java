@@ -13,7 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-
+/**
+ * Class that sends specified file from server to client in separate thread.
+ */
 @AllArgsConstructor
 class GetTask implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(GetTask.class);

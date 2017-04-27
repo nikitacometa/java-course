@@ -1,6 +1,8 @@
 package ru.spbau.gorokhov.ftp.server.utils;
 
-
+/**
+ * Storing information about server state: if it's running or not.
+ */
 public class ServerState {
     private boolean running;
 

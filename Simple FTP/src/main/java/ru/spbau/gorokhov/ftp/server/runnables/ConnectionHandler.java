@@ -11,7 +11,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-
+/**
+ * Class that handle connection with one of the clients in separate thread.
+ * It's getting requests from client and when it gets one it starts processing it in separate thread.
+ */
 @AllArgsConstructor
 class ConnectionHandler implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(ConnectionHandler.class);

@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-
+/**
+ * Class represents short information about file on the server.
+ * Stores file name and type (directory or not).
+ */
 @AllArgsConstructor
 @Getter
 public class FileInfo implements Comparable<FileInfo> {

@@ -10,7 +10,10 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-
+/**
+ * Class that are waiting for new clients connections in separate thread.
+ * When new connection retrieved it's being sent to one more separate thread for handling.
+ */
 @AllArgsConstructor
 public class ClientManager implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(ClientManager.class);

@@ -13,7 +13,9 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+/**
+ * Class that sends information about specified server directory to client in separate thread.
+ */
 @AllArgsConstructor
 class ListTask implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(ListTask.class);

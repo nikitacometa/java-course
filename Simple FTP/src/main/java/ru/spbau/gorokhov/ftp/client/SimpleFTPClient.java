@@ -14,7 +14,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Class which implements client for communicating with SimpleFTPServer.
+ */
 public class SimpleFTPClient {
     private static final int LIST_COMMAND_ID = 1;
     private static final int GET_COMMAND_ID = 2;
@@ -34,6 +36,10 @@ public class SimpleFTPClient {
         this.serverPort = serverPort;
     }
 
+    /**
+     * Connects client to the server.
+     * @throws SimpleFTPException if already connected or if connection can't be established
+     */
     public void connect() throws SimpleFTPException {
         if (hasConnection) {
             throw new SimpleFTPAlreadyConnectedException();
@@ -49,6 +55,10 @@ public class SimpleFTPClient {
         }
     }
 
+    /**
+     * Disconnects client from the server.
+     * @throws SimpleFTPDisconnectedException if already disconnected of having troubles when disconnecting
+     */
     public void disconnect() throws SimpleFTPDisconnectedException {
         if (!hasConnection) {
             throw new SimpleFTPDisconnectedException("Already disconnected from server.");
@@ -64,6 +74,13 @@ public class SimpleFTPClient {
         }
     }
 
+    /**
+     * Getting information about all the files in specified directory on the server.
+     * Information about file contains fileName and flag is it directory of not.
+     * @param directoryName server directory that we want to observe
+     * @return list off all files in directory in format <fileName, isDirectory>
+     * @throws SimpleFTPDisconnectedException if connection to the server is lost
+     */
     @NotNull
     public List<FileInfo> executeList(@NotNull String directoryName) throws SimpleFTPDisconnectedException {
         if (!hasConnection) {
@@ -92,6 +109,12 @@ public class SimpleFTPClient {
 
     private static final int BUFFER_SIZE = 4096;
 
+    /**
+     * Downloading specified file from the server.
+     * @param fileName file to download
+     * @return byte content of the file
+     * @throws SimpleFTPDisconnectedException if connection to the server is lost
+     */
     @NotNull
     public byte[] executeGet(@NotNull String fileName) throws SimpleFTPDisconnectedException {
         if (!hasConnection) {
@@ -131,6 +154,10 @@ public class SimpleFTPClient {
         }
     }
 
+    /**
+     * Shows if there is connection to the server.
+     * @return <tt>true</tt> if connected, <tt>false</tt> otherwise
+     */
     public boolean connectedToServer() {
         return hasConnection;
     }

@@ -8,7 +8,10 @@ import ru.spbau.gorokhov.ftp.server.utils.ServerState;
 import java.io.*;
 import java.net.ServerSocket;
 
-
+/**
+ * Class represents simple ftp server. It can work with multiple clients handling every client in separate thread.
+ * Has two types of requests - list files in specified directory and download specified file.
+ */
 public class SimpleFTPServer {
     private static final Logger log = LoggerFactory.getLogger(SimpleFTPServer.class);
 
@@ -28,6 +31,9 @@ public class SimpleFTPServer {
         this(DEFAULT_PORT_NUMBER);
     }
 
+    /**
+     * Starts server starting to wait for new connections.
+     */
     public void start() {
         try {
             serverSocket = new ServerSocket(port);
@@ -42,6 +48,9 @@ public class SimpleFTPServer {
         new Thread(new ClientManager(serverSocket, serverState)).start();
     }
 
+    /**
+     * Stops server after completing all running tasks.
+     */
     public void stop() {
         serverState.stop();
 

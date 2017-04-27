@@ -11,7 +11,9 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
 
-
+/**
+ * Class implements simple console application for working with server client.
+ */
 public class ConsoleApplication {
     private static final String CONNECT_COMMAND = "connect";
     private static final String LIST_COMMAND = "list";
