@@ -103,9 +103,14 @@ public class SimpleFTPClient {
             serverInput.writeUTF(fileName);
             serverInput.flush();
 
+            long totalBytes = serverOutput.readLong();
+
+            if (totalBytes == 0) {
+                return new byte[0];
+            }
+
             ByteArrayOutputStream content = new ByteArrayOutputStream();
             byte[] buffer = new byte[BUFFER_SIZE];
-            long totalBytes = serverOutput.readLong();
             long readBytes = 0;
             while (readBytes < totalBytes) {
                 int pieceSize = (int) Math.min(BUFFER_SIZE, totalBytes - readBytes);
@@ -115,9 +120,18 @@ public class SimpleFTPClient {
             }
 
             return content.toByteArray();
+
+//            byte[] content = new byte[(int) totalBytes];
+//            serverOutput.read(content, 0, (int) totalBytes);
+//
+//            return content;
         } catch (IOException e) {
             disconnect();
             throw new SimpleFTPDisconnectedException("Error occurred while getting the file, disconnected from server.", e);
         }
+    }
+
+    public boolean connectedToServer() {
+        return hasConnection;
     }
 }

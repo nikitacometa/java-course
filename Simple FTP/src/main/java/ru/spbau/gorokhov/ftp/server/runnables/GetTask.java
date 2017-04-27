@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -33,18 +34,29 @@ class GetTask implements Runnable {
             if (Files.isDirectory(filePath) || !Files.exists(filePath)) {
                 clientInput.writeInt(0);
             } else {
-                try (FileInputStream inputStream = new FileInputStream(filePath.toFile())) {
+                long totalBytes = Files.size(filePath);
+                clientInput.writeLong(totalBytes);
+
+                if (totalBytes == 0) {
+                    return;
+                }
+
+                try (FileInputStream fileStream = new FileInputStream(filePath.toFile()) /*;
+                     BufferedInputStream bufferStream = new BufferedInputStream(fileStream)*/) {
                     byte[] buffer = new byte[BUFFER_SIZE];
-                    long totalBytes = Files.size(filePath);
                     long writtenBytes = 0;
 
-                    clientInput.writeLong(totalBytes);
                     while (writtenBytes < totalBytes) {
                         int pieceSize = (int) Math.min(BUFFER_SIZE, totalBytes - writtenBytes);
-                        inputStream.read(buffer, 0, pieceSize);
-                        clientInput.write(buffer, 0, pieceSize);
-                        writtenBytes += pieceSize;
+                        int readBytes = fileStream.read(buffer, 0, pieceSize);
+                        clientInput.write(buffer, 0, readBytes);
+                        writtenBytes += readBytes;
                     }
+
+//                    byte[] content = new byte[(int) totalBytes];
+//                    int readBytes = bufferStream.read(content, 0, (int) totalBytes);
+//
+//                    clientInput.write(content, 0, readBytes);
 
                     log.info("File '" + fileName + "' was sent.");
                 } catch (IOException e) {
