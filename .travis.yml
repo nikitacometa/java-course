@@ -4,7 +4,7 @@ jdk:
   - oraclejdk8
 
 env:
-  - PROJECT_DIR=Simple FTP
+  - PROJECT_DIR="Simple FTP"
 
 before_install:
   - cd $PROJECT_DIR
