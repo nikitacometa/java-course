@@ -4,5 +4,5 @@ jdk:
   - oraclejdk8
 
 before_install:
-  - cd "/Simple\ FTP"
+  - cd "/Simple FTP"
   - chmod +x gradlew
