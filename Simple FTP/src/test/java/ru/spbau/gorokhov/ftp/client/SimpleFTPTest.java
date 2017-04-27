@@ -57,17 +57,16 @@ public class SimpleFTPTest {
                 createFolder();
             }
 
-            String directoryName = testFolder.getRoot().getAbsolutePath();
-            List<FileInfo> actual = client.executeList(directoryName);
+            List<FileInfo> actual = client.executeList(testFolderName());
 
-            assertThat(actual, containsInAnyOrder(currentFiles.toArray()));
+            assertListEquals(actual, currentFiles);
         }
     }
 
     @Test
     public void getTest() throws IOException, SimpleFTPDisconnectedException {
-        int fileSize = 10;
-        for (int iteration = 0; iteration < 7; iteration++) {
+        int fileSize = 1;
+        for (int iteration = 0; iteration < 9; iteration++) {
             Path filePath = createFile();
 
             byte[] expected = getRandomBytes(fileSize);
@@ -82,7 +81,7 @@ public class SimpleFTPTest {
 
         // directory test
         byte[] empty = new byte[0];
-        byte[] actual = client.executeGet(testFolder.getRoot().getAbsolutePath());
+        byte[] actual = client.executeGet(testFolderName());
         assertArrayEquals(empty, actual);
 
         // not existing file test
@@ -97,6 +96,29 @@ public class SimpleFTPTest {
         client.executeGet("fileName");
     }
 
+    @Test
+    public void multipleClientsTest() throws SimpleFTPException, IOException {
+        SimpleFTPClient client1 = new SimpleFTPClient("localhost", TEST_PORT);
+        client1.connect();
+
+        SimpleFTPClient client2 = new SimpleFTPClient("localhost", TEST_PORT);
+        client2.connect();
+
+        for (int i = 0; i < 1000; i++) {
+            createFile();
+        }
+
+        List<FileInfo> actual = client.executeList(testFolderName());
+        List<FileInfo> actual1 = client1.executeList(testFolderName());
+        List<FileInfo> actual2 = client2.executeList(testFolderName());
+
+        assertListEquals(actual, currentFiles);
+        assertListEquals(actual1, currentFiles);
+        assertListEquals(actual2, currentFiles);
+
+        client1.disconnect();
+        client2.disconnect();
+    }
 
     private Path createFile() throws IOException {
         File newFile = testFolder.newFile();
@@ -116,6 +138,14 @@ public class SimpleFTPTest {
         byte[] res = new byte[count];
         RANDOM.nextBytes(res);
         return res;
+    }
+
+    private static <T> void assertListEquals(List<T> actual, List<T> expected) {
+        assertThat(actual, containsInAnyOrder(expected.toArray()));
+    }
+
+    private String testFolderName() {
+        return testFolder.getRoot().getAbsolutePath();
     }
 
     @After

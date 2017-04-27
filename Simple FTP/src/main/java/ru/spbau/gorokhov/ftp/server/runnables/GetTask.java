@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,17 +33,17 @@ class GetTask implements Runnable {
         try {
             Path filePath = Paths.get(fileName);
             if (Files.isDirectory(filePath) || !Files.exists(filePath)) {
-                clientInput.writeInt(0);
+                clientInput.writeLong(0);
+
+                log.info("Invalid file, response with size=0 was sent.");
             } else {
                 long totalBytes = Files.size(filePath);
                 clientInput.writeLong(totalBytes);
-
                 if (totalBytes == 0) {
                     return;
                 }
 
-                try (FileInputStream fileStream = new FileInputStream(filePath.toFile()) /*;
-                     BufferedInputStream bufferStream = new BufferedInputStream(fileStream)*/) {
+                try (FileInputStream fileStream = new FileInputStream(filePath.toFile())) {
                     byte[] buffer = new byte[BUFFER_SIZE];
                     long writtenBytes = 0;
 
@@ -54,11 +53,6 @@ class GetTask implements Runnable {
                         clientInput.write(buffer, 0, readBytes);
                         writtenBytes += readBytes;
                     }
-
-//                    byte[] content = new byte[(int) totalBytes];
-//                    int readBytes = bufferStream.read(content, 0, (int) totalBytes);
-//
-//                    clientInput.write(content, 0, readBytes);
 
                     log.info("File '" + fileName + "' was sent.");
                 } catch (IOException e) {
