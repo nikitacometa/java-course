@@ -24,7 +24,6 @@ class ConnectionHandler implements Runnable {
     @NotNull
     private final ServerState serverState;
 
-
     @Override
     public void run() {
         log.info("Started working with new client.");

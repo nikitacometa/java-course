@@ -107,7 +107,6 @@ public class ConsoleApplication {
             System.out.println("File was saved as '" + filePath.toString() + "'.");
         } catch (IOException e) {
             System.out.println("Unable to save the file.");
-            e.printStackTrace();
         }
     }
 

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @AllArgsConstructor
 @Getter
-public class FileInfo implements Comparable<FileInfo> {
+public class FileInfo {
     @NotNull
     private final String fileName;
     @NotNull
@@ -19,12 +19,6 @@ public class FileInfo implements Comparable<FileInfo> {
     @Override
     public String toString() {
         return "'" + fileName + "', " + (isDirectory ? "directory" : "file");
-    }
-
-    @Override
-    public int compareTo(@NotNull FileInfo o) {
-        int nameCmp = fileName.compareTo(o.getFileName());
-        return nameCmp == 0 ? isDirectory.compareTo(o.getIsDirectory()) : nameCmp;
     }
 
     @Override

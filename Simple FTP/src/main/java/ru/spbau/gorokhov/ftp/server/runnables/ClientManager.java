@@ -26,12 +26,13 @@ public class ClientManager implements Runnable {
     @Override
     public void run() {
         while (serverState.isRunning()) {
-            Socket newConnection = null;
+            Socket newConnection;
             try {
                 newConnection = serverSocket.accept();
             } catch (IOException e) {
                 log.error("Failed to establish new connection.", e);
                 serverState.stop();
+                return;
             }
             new Thread(new ConnectionHandler(newConnection, serverState)).start();
         }
