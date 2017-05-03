@@ -9,12 +9,16 @@ import org.jetbrains.annotations.NotNull;
  * Stores file name and type (directory or not).
  */
 @AllArgsConstructor
-@Getter
 public class FileInfo {
+    @Getter
     @NotNull
     private final String fileName;
     @NotNull
     private final Boolean isDirectory;
+
+    public Boolean isDirectory() {
+        return isDirectory;
+    }
 
     @Override
     public String toString() {
@@ -25,7 +29,7 @@ public class FileInfo {
     public boolean equals(Object o) {
         if (o instanceof FileInfo) {
             FileInfo that = (FileInfo) o;
-            return this.fileName.equals(that.getFileName()) && this.isDirectory.equals(that.getIsDirectory());
+            return this.fileName.equals(that.getFileName()) && this.isDirectory.equals(that.isDirectory());
         }
         return false;
     }
