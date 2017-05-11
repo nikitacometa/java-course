@@ -34,8 +34,6 @@ public class Game extends Application {
 
     private final List<Cell> aliveCells = new ArrayList<>();
 
-    private int remains = SIZE * SIZE / 2;
-
     private long startTime;
 
     private Cell chosenCell = null;
@@ -47,12 +45,12 @@ public class Game extends Application {
         primaryStage.setTitle("Game 1.0");
 
         startNewGame();
+
+        primaryStage.show();
     }
 
     private void startNewGame() {
         primaryStage.setScene(new Scene(initTableCells()));
-
-        primaryStage.show();
 
         startTime = System.currentTimeMillis();
     }
@@ -77,14 +75,16 @@ public class Game extends Application {
                     if (chosenCell == null) {
                         chosenCell = positions[x][y];
                     } else {
-
                         aliveCells.forEach(pos -> cells[pos.getX()][pos.getY()].setDisable(true));
+
+                        boolean match = numbers[x][y] == numbers[chosenCell.getX()][chosenCell.getY()];
+                        long waitTime = match ? 0 : WAIT_TIME;
 
                         Task<Void> sleeper = new Task<Void>() {
                             @Override
                             protected Void call() throws Exception {
                                 try {
-                                    Thread.sleep(WAIT_TIME);
+                                    Thread.sleep(waitTime);
                                 } catch (InterruptedException ignored) {
                                 }
                                 return null;
@@ -92,12 +92,11 @@ public class Game extends Application {
 
                             @Override
                             protected void succeeded() {
-                                if (numbers[x][y] == numbers[chosenCell.getX()][chosenCell.getY()]) {
+                                if (match) {
                                     aliveCells.remove(positions[x][y]);
                                     aliveCells.remove(positions[chosenCell.getX()][chosenCell.getY()]);
-                                    remains--;
 
-                                    if (remains == 0) {
+                                    if (aliveCells.size() == 0) {
                                         showWinAlert();
                                     }
                                 } else {
@@ -127,7 +126,7 @@ public class Game extends Application {
     private void showWinAlert() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Congratulations!");
-        alert.setHeaderText(String.format("You have won the game! Your time is %dms.", System.currentTimeMillis() - startTime));
+        alert.setHeaderText(String.format("You've won the game! Your time is %dms.", System.currentTimeMillis() - startTime));
         alert.setContentText("Would you like to play one more time?");
 
         Optional<ButtonType> result = alert.showAndWait();
