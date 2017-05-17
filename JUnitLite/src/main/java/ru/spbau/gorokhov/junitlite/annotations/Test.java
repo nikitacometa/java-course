@@ -11,9 +11,15 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Test {
-    String ignore() default "";
+    String DEFAULT_IGNORE = "";
+
+    Class<? extends Throwable> DEFAULT_EXPECTED = NotException.class;
+
+
+    String ignore() default DEFAULT_IGNORE;
 
     Class<? extends Throwable> expected() default NotException.class;
+
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     final class NotException extends Throwable {}
