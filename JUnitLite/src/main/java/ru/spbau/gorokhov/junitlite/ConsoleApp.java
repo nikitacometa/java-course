@@ -21,14 +21,17 @@ public class ConsoleApp {
         for (String className : args) {
             try {
                 boolean isSuccessful = testRunner.runTests(loadClass(className));
+
+                log.format("\n%s testing finished! %s See runner log for more info.\n", className,
+                        isSuccessful ? "All tests passed." : "Some of the tests failed.");
             } catch (InvalidTestClassException ignored) {
                 // is already written to the log but could be handled somehow else
             } catch (ClassNotFoundException e) {
-                log.format("Class %s can't be tested because it doesn't exist in classpath.", className);
+                log.format("\nClass %s can't be tested because it doesn't exist in classpath.\n", className);
             }
         }
 
-        log.println("Bye!");
+        log.println("\nBye!");
     }
 
     @NotNull

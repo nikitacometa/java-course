@@ -46,7 +46,7 @@ public class TestRunner {
         try {
             classInstance = getInstance(cls);
         } catch (IllegalAccessException | InstantiationException e) {
-            throw errorWithLog(e, "Failed to create new instance of class %s.");
+            throw errorWithLog(e, String.format("Failed to create new instance of class %s.", cls));
         }
 
         List<Method> beforeClassMethods = getAnnotatedMethods(cls, BeforeClass.class);
@@ -217,7 +217,7 @@ public class TestRunner {
     @NotNull
     private static <T extends Annotation> List<Method> getAnnotatedMethods(@NotNull Class<?> cls, @NotNull Class<T> annotation) {
         return Arrays
-                .stream(cls.getMethods())
+                .stream(cls.getDeclaredMethods())
                 .filter(method -> method.getAnnotation(annotation) != null)
                 .collect(Collectors.toList());
     }

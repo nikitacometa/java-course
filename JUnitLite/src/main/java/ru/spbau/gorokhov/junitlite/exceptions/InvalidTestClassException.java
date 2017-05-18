@@ -9,11 +9,8 @@ import ru.spbau.gorokhov.junitlite.TestRunner;
  * <UL>
  *     <LI>Class with specified name doesn't exist.</LI>
  *     <LI>Failed to create class instance.</LI>
- *     <LI>Annotated methods are non-public, have parameters or static for
- *     {@link ru.spbau.gorokhov.junitlite.annotations.Before},
- *     {@link ru.spbau.gorokhov.junitlite.annotations.Test} and
- *     {@link ru.spbau.gorokhov.junitlite.annotations.After} or non-static for
- *     {@link ru.spbau.gorokhov.junitlite.annotations.BeforeClass} and {@link ru.spbau.gorokhov.junitlite.annotations.AfterClass}.</LI>
+ *     <LI>Some of annotated methods don't fit its annotation modifiers requirements.</LI>
+ *     <LI>Class doesn't have public constructor without parameters.</LI>
  * </UL>
  */
 public class InvalidTestClassException extends Exception {
