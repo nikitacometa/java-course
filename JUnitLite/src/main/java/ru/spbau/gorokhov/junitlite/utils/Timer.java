@@ -1,5 +1,8 @@
 package ru.spbau.gorokhov.junitlite.utils;
 
+/**
+ * Simple class for measuring time in milliseconds.
+ */
 public class Timer {
     private long startTime;
 

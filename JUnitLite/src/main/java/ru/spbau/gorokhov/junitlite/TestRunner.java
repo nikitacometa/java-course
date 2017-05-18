@@ -17,27 +17,25 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Class implements a runner to run tests in classes written using JUnitLite annotations.
+ * It writes run results into specified log stream.
+ */
 @RequiredArgsConstructor
 public class TestRunner {
     private static final String LOG_SEPARATOR = "===================================================================================";
 
+    @NotNull
     private final PrintStream log;
 
     private final Timer testingTime = new Timer();
 
-
-    public boolean runTests(@NotNull String className) throws InvalidTestClassException {
-        testingTime.start();
-
-        try {
-            Class<?> cls = loadClass(className);
-
-            return runTests(cls);
-        } catch (ClassNotFoundException e) {
-            throw errorWithLog(e, "Failed to load class " + className + ".");
-        }
-    }
-
+    /**
+     * Runs JUnitLite tests from a specified class.
+     * @param cls testing class
+     * @return <tt>true</tt> if all the tests from class passed, <tt>false</tt> otherwise
+     * @throws InvalidTestClassException if class is using JUnitLite annotations incorrectly
+     */
     public boolean runTests(@NotNull Class<?> cls) throws InvalidTestClassException {
         log.format("Testing class %s...\n\n", cls);
 
@@ -195,7 +193,7 @@ public class TestRunner {
         checkMethodsArePublic(methods);
     }
 
-    private void logFinish(String testingStatus) {
+    private void logFinish(@NotNull String testingStatus) {
         log.format("\nTesting finished %s in %dms.\n", testingStatus, testingTime.getTime());
     }
 
@@ -217,16 +215,11 @@ public class TestRunner {
     }
 
     @NotNull
-    private static <T extends Annotation> List<Method> getAnnotatedMethods(Class<?> cls, Class<T> annotation) {
+    private static <T extends Annotation> List<Method> getAnnotatedMethods(@NotNull Class<?> cls, @NotNull Class<T> annotation) {
         return Arrays
                 .stream(cls.getMethods())
                 .filter(method -> method.getAnnotation(annotation) != null)
                 .collect(Collectors.toList());
-    }
-
-    @NotNull
-    private static Class<?> loadClass(@NotNull String className) throws ClassNotFoundException {
-        return Class.forName(className);
     }
 
     @NotNull
