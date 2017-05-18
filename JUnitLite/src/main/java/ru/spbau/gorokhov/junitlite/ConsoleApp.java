@@ -16,7 +16,7 @@ import java.util.jar.JarFile;
 
 /**
  * Class implements simple console application which takes some jars,
- * loads classes from there and run tests in these classes with {@link TestRunner}.
+ * loads loadable classes from there and run tests in these classes with {@link TestRunner}.
  * Testing log is written to System.out.
  */
 public class ConsoleApp {
@@ -30,9 +30,11 @@ public class ConsoleApp {
         for (String jarFileName : args) {
             List<Class<?>> testingClasses;
 
+            log.format("\nLoading classes from %s...\n", jarFileName);
+
             try {
-                testingClasses = loadClasses(jarFileName);
-            } catch (Exception e) {
+                testingClasses = loadClasses(jarFileName, log);
+            } catch (IOException e) {
                 log.format("Failed to load classes from %s. Error occurred:\n", jarFileName);
                 e.printStackTrace(log);
                 continue;
@@ -54,7 +56,7 @@ public class ConsoleApp {
     }
 
     @NotNull
-    private static List<Class<?>> loadClasses(@NotNull String jarFileName) throws IOException {
+    private static List<Class<?>> loadClasses(@NotNull String jarFileName, @NotNull PrintStream log) throws IOException {
         JarFile jarFile = new JarFile(jarFileName);
         Enumeration<JarEntry> entries = jarFile.entries();
 
@@ -76,9 +78,13 @@ public class ConsoleApp {
             Class<?> cls;
             try {
                 cls = classLoader.loadClass(className);
-            } catch (Throwable ignored) {
+            } catch (Throwable t) {
+                log.format("\nFailed to load class %s. Error occurred:\n", className);
+                t.printStackTrace(log);
                 continue;
             }
+
+            log.format("\nClass %s was loaded.\n", className);
 
             classes.add(cls);
         }

@@ -4,7 +4,6 @@ package ru.spbau.gorokhov.junitlite;
 import org.jetbrains.annotations.NotNull;
 import ru.spbau.gorokhov.junitlite.exceptions.InvalidTestClassException;
 import ru.spbau.gorokhov.junitlite.testclasses.*;
-import ru.spbau.gorokhov.junitlite.testclasses.TestClass;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
