@@ -37,7 +37,7 @@ public class TestRunner {
      * @throws InvalidTestClassException if class is using JUnitLite annotations incorrectly
      */
     public boolean runTests(@NotNull Class<?> cls) throws InvalidTestClassException {
-        log.format("Testing class %s...\n\n", cls);
+        log.format("\nTesting class %s...\n\n", cls);
 
         testingTime.start();
 
@@ -45,7 +45,7 @@ public class TestRunner {
 
         try {
             classInstance = getInstance(cls);
-        } catch (IllegalAccessException | InstantiationException e) {
+        } catch (Exception e) {
             throw errorWithLog(e, String.format("Failed to create new instance of class %s.", cls));
         }
 
@@ -73,7 +73,7 @@ public class TestRunner {
     }
 
     private boolean executeTests(@NotNull List<Method> beforeMethods, @NotNull List<Method> testMethods,
-                              @NotNull List<Method> afterMethods, @NotNull Object classInstance) {
+                              @NotNull List<Method> afterMethods, @NotNull Object classInstance) throws InvalidTestClassException {
 
         log.println("Running tests...\n");
 
@@ -102,8 +102,8 @@ public class TestRunner {
 
                 try {
                     testMethod.invoke(classInstance);
-                } catch (IllegalAccessException ignored) {
-                    // TODO wut
+                } catch (IllegalAccessException e) {
+                    throw errorWithLog(e, "Some troubles that weren't found during class validation process.");
                 } catch (InvocationTargetException e) {
                     e.getCause().printStackTrace(log);
                     caught = e.getCause().getClass();
@@ -139,12 +139,12 @@ public class TestRunner {
         return executedTests == successfulTests;
     }
 
-    private void executeMethods(@NotNull List<Method> methods, @NotNull Object classInstance) {
+    private void executeMethods(@NotNull List<Method> methods, @NotNull Object classInstance) throws InvalidTestClassException {
         for (Method method : methods) {
             try {
                 method.invoke(classInstance);
-            } catch (IllegalAccessException ignored) {
-                // TODO
+            } catch (IllegalAccessException e) {
+                throw errorWithLog(e, "Some troubles that weren't found during class validation process.");
             } catch (InvocationTargetException e) {
                 e.getCause().printStackTrace(log);
             }
@@ -194,7 +194,7 @@ public class TestRunner {
     }
 
     private void logFinish(@NotNull String testingStatus) {
-        log.format("\nTesting finished %s in %dms.\n", testingStatus, testingTime.getTime());
+        log.format("\nTesting finished %s in %dms.\n\n", testingStatus, testingTime.getTime());
     }
 
     private InvalidTestClassException errorWithLog(@NotNull String message) {

@@ -1,5 +1,5 @@
 group 'ru.spabau.gorokhov'
-version '1.0-SNAPSHOT'
+version '1.3'
 
 apply plugin: 'java'
 
@@ -18,13 +18,15 @@ dependencies {
 
 task buildJar(type: Jar) {
     manifest {
-        from file("${projectDir}/src/main/resources/META-INF/MANIFEST.MF")
+        attributes 'Implementation-Title': 'JUnitLite',
+                'Implementation-Version': version,
+                'Main-Class': 'ru.spbau.gorokhov.junitlite.ConsoleApp'
     }
-    baseName = "testRunner"
-    from {
-        configurations.compile.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
-    }
+    baseName = project.name
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
+}
+
+task packTests(type: Jar) {
+    from sourceSets.test.output
 }
