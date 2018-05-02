@@ -1,4 +1,4 @@
-package ru.spbau.gorokhov.ftp.consoleapp;
+package ru.spbau.gorokhov.ftp.client.consoleapp;
 
 import ru.spbau.gorokhov.ftp.client.SimpleFTPClient;
 import ru.spbau.gorokhov.ftp.client.exceptions.SimpleFTPException;
